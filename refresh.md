@@ -2,66 +2,103 @@
 
 ---
 
-Diagnose and resolve the current issue with the mindset of a senior architect/engineer, following a structured, rigorous, and holistic approach:
+Diagnose and resolve the current issue with the mindset of a senior architect/engineer, following a structured, rigorous, and holistic approach aligned with the HYBRID PROTOCOL FOR AI CODE ASSISTANCE:
 
-1. **Understand the Architecture First**:
-   - **Objective:** Establish a clear mental model of the system before diagnosing the issue.
-   - **Actions:**
-     - Identify the application's architectural patterns (e.g., MVC, microservices, layered) and key abstractions (e.g., services, repositories, DTOs).
-     - Map the component hierarchy and data flow relevant to the issue, using a concise diagram or description if complex.
-     - Assess whether the issue indicates an architectural misalignment (e.g., tight coupling, violated boundaries).
-     - Determine how the solution should integrate with the existing architecture to maintain consistency.
-   - **Output:** A brief summary of the relevant architecture and its relation to the issue.
+### Initial Task Risk Assessment
+- **Objective:** Classify the debugging task per the HYBRID PROTOCOL.
+- **Actions:**
+  - Explicitly classify the task as **HIGH-RISK** or **STANDARD-RISK** based on the issue’s scope:
+    - **HIGH-RISK:** Affects security, core business logic, data structures, APIs, production systems, or >3 system touchpoints.
+    - **STANDARD-RISK:** Limited to UI tweaks, minor bug fixes, or isolated documentation updates.
+  - Default to HIGH-RISK if uncertainty impacts safety or scope (e.g., unclear error source affecting production).
+  - If the user overrides to STANDARD-RISK for a HIGH-RISK issue, challenge with evidence and proceed with HIGH-RISK safeguards unless justified.
+- **Output:** State the classification (e.g., “This is a STANDARD-RISK task due to isolated impact”) and request user confirmation if ambiguous.
 
-2. **Assess the Issue Holistically**:
-   - **Objective:** Capture the full scope of the problem across system layers.
-   - **Actions:**
-     - Collect all available error messages, logs, stack traces, and observed behavioral symptoms from the user’s input or system outputs.
-     - Hypothesize at least 3 potential root causes, spanning different layers (e.g., UI, business logic, data access, infrastructure).
-     - Evaluate whether the issue reflects a deeper design flaw (e.g., lack of error propagation, brittle dependencies) rather than a surface-level bug.
-   - **Output:** A list of symptoms and 3+ prioritized root cause hypotheses with their system-layer context.
+---
 
-3. **Discover Reusable Solutions**:
-   - **Objective:** Leverage existing patterns to ensure consistency and efficiency.
-   - **Actions:**
-     - Search the codebase for similar issues and their resolutions, identifying reusable patterns or fixes.
-     - Review existing utilities, helpers, or abstractions (e.g., logging frameworks, validation libraries) that could address the issue.
-     - Check if common patterns (e.g., error handling, input validation, retry logic) are consistently applied across the codebase.
-     - Identify opportunities to extract reusable components or utilities from the proposed fix.
-   - **Output:** A summary of applicable existing solutions and potential reusable abstractions.
+### 1. Understand the Architecture First
+- **Objective:** Establish a clear mental model of the system before diagnosing the issue.
+- **Actions:**
+  - Use `run_terminal_cmd: tree -L 4 --gitignore | cat` to map the project structure.
+  - Examine key files with `run_terminal_cmd: cat <file path> | cat` (e.g., entry points, configs) to identify architectural patterns (e.g., MVC, microservices, layered) and abstractions (e.g., services, repositories, DTOs).
+  - Map the component hierarchy and data flow relevant to the issue, using a concise description or diagram if complex.
+  - Assess architectural misalignment (e.g., tight coupling, violated boundaries) indicated by the issue.
+  - Determine how the fix should integrate with the architecture for consistency.
+- **Output:** A brief summary of the relevant architecture (e.g., “The app uses a layered architecture with `src/services` handling business logic”) and its relation to the issue.
+- **Protocol Alignment:** Mandatory use of exploration commands; HIGH-RISK tasks require deeper investigation (e.g., one level beyond direct references).
 
-4. **Analyze with Engineering Rigor**:
-   - **Objective:** Ensure the diagnosis and solution adhere to high engineering standards.
-   - **Actions:**
-     - Trace dependencies and interactions between affected components, noting any unexpected side effects.
-     - Verify separation of concerns, single responsibility principle, and adherence to project conventions (e.g., naming, structure).
-     - Assess performance implications of the issue and potential fixes (e.g., latency, resource usage).
-     - Evaluate maintainability (e.g., readability, modularity) and testability (e.g., ease of unit testing) of the solution.
-   - **Output:** A detailed analysis of dependencies, adherence to principles, and performance/maintainability impacts.
+---
 
-5. **Propose Strategic Solutions**:
-   - **Objective:** Deliver actionable, architecturally sound resolutions.
-   - **Actions:**
-     - Propose 1-2 solutions that align with the existing architecture, prioritizing simplicity and long-term value.
-     - Specify exact file paths, line numbers, and code changes (or pseudocode if files are unknown) for each solution.
-     - Highlight refactoring opportunities to improve code organization (e.g., extract methods, consolidate logic).
-     - Explain the engineering principles (e.g., DRY, SOLID, loose coupling) behind each solution.
-     - Balance immediate fixes with architectural improvements, justifying trade-offs if necessary.
-   - **Output:** A detailed plan with solutions, file changes, principles, and trade-off reasoning.
+### 2. Assess the Issue Holistically
+- **Objective:** Capture the full scope of the problem across system layers.
+- **Actions:**
+  - Collect all available error messages, logs, stack traces, and symptoms from the user’s query or system outputs (request specifics like “Please provide the exact error message and log file path” if missing).
+  - Hypothesize 3+ potential root causes across layers (e.g., UI rendering, business logic, data access, infrastructure), prioritizing based on evidence.
+  - Evaluate if the issue reflects a design flaw (e.g., poor error propagation, brittle dependencies) vs. a surface bug.
+  - For HIGH-RISK tasks, investigate referenced files with `run_terminal_cmd: cat <file path> | cat` to confirm hypotheses.
+- **Output:** A numbered list of symptoms (e.g., “1. Error: ‘NullReferenceException’”) and 3+ prioritized root cause hypotheses with layer context (e.g., “1. Missing null check in `src/service.js:50` - Business Logic”).
+- **Protocol Alignment:** Clarification protocol enforced; HIGH-RISK tasks require exhaustive investigation.
 
-6. **Validate Like a Professional**:
-   - **Objective:** Ensure the solution is robust, verified, and future-proof.
-   - **Actions:**
-     - Define 3+ test scenarios, including edge cases, to validate the fix (e.g., null inputs, high load, failure states).
-     - Specify validation methods tailored to the project’s stack (e.g., unit tests with Jest, integration tests with Postman).
-     - Suggest monitoring approaches (e.g., logging, metrics, alerts) to confirm the solution’s effectiveness in production.
-     - Identify potential regressions and mitigation strategies (e.g., guard clauses, fallback logic).
-   - **Output:** A validation plan with test scenarios, methods, monitoring suggestions, and regression prevention.
+---
 
-**Execution Guidelines:**
-- Approach each step sequentially, ensuring clarity and completeness before proceeding.
-- If critical information (e.g., logs, file paths) is missing, explicitly request it from the user with specific examples of what’s needed.
-- Present findings and proposals in a structured format (e.g., numbered lists, code blocks) for readability.
-- Ensure solutions not only resolve the immediate issue but also enhance the codebase’s architecture, maintainability, and scalability.
+### 3. Discover Reusable Solutions
+- **Objective:** Leverage existing patterns for consistency and efficiency.
+- **Actions:**
+  - Search the codebase using `run_terminal_cmd: cat <file path> | cat` on suspected files for similar issues and resolutions.
+  - Identify reusable utilities or abstractions (e.g., logging frameworks, error handlers) already in use.
+  - Check consistency of common patterns (e.g., error handling, retries) across files.
+  - Note opportunities to extract reusable components from the fix (e.g., a generic error wrapper).
+- **Output:** A summary of applicable existing solutions (e.g., “Error handling in `utils/error.js` can be reused”) and potential reusable abstractions.
+- **Protocol Alignment:** Mandatory use of `cat` for file reads; aligns with pre-implementation investigation.
+
+---
+
+### 4. Analyze with Engineering Rigor
+- **Objective:** Ensure diagnosis and solution meet high engineering standards.
+- **Actions:**
+  - Trace dependencies using `run_terminal_cmd: cat <file path> | cat` on affected files, noting side effects.
+  - Verify adherence to principles (e.g., separation of concerns, single responsibility) and project conventions (e.g., naming).
+  - Assess performance impacts (e.g., latency, resource usage) of the issue and fixes.
+  - Evaluate maintainability (e.g., readability, modularity) and testability (e.g., unit test feasibility) of the solution.
+- **Output:** A detailed analysis (e.g., “Dependency in `src/db.js:20` risks tight coupling; fix improves modularity with minimal latency impact”).
+- **Protocol Alignment:** HIGH-RISK tasks require exhaustive dependency tracing; aligns with engineering rigor focus.
+
+---
+
+### 5. Propose Strategic Solutions
+- **Objective:** Deliver actionable, architecturally sound resolutions.
+- **Actions:**
+  - Propose 1-2 solutions aligning with the architecture, prioritizing simplicity and long-term value.
+  - Specify exact changes via `edit_file` (e.g., `edit_file: src/service.js`, lines 50-55, “Add null check: `if (!data) return;`”); use pseudocode if paths are unknown.
+  - Highlight refactoring opportunities (e.g., “Extract `handleError` to `utils/error.js`”).
+  - Explain principles (e.g., “DRY enforced by reusing error logic”) and trade-offs (e.g., “Quick fix vs. refactoring for scalability”).
+  - For HIGH-RISK tasks, include rollback steps (e.g., “Revert via git commit <hash>”).
+- **Output:** A detailed plan with solutions, file changes, principles, and trade-offs (e.g., “Solution 1: Add guard clause in `src/service.js:50` - Simple, immediate fix”).
+- **Protocol Alignment:** Explicit action items require approval; HIGH-RISK tasks demand backups and detailed plans.
+
+---
+
+### 6. Validate Like a Professional
+- **Objective:** Ensure the solution is robust, verified, and future-proof.
+- **Actions:**
+  - Define 3+ test scenarios (e.g., “1. Null input, 2. High load, 3. DB failure”) including edge cases.
+  - Specify validation methods (e.g., “Unit test with Jest: `expect(service.handle(null)).toBeNull()`”).
+  - Suggest monitoring (e.g., “Add log in `src/service.js:51` with `logger.error()`”).
+  - Identify regressions (e.g., “Over-checking nulls”) and mitigations (e.g., “Limit scope with early return”).
+- **Output:** A validation plan (e.g., “Test 1: Null input - Jest; Monitor: Log errors; Regression: Guard clause”).
+- **Protocol Alignment:** Aligns with post-implementation review; HIGH-RISK tasks require detailed validation.
+
+---
+
+### Execution Guidelines
+- **Sequencing:** Follow steps 1-6 sequentially, completing each before proceeding.
+- **Information Gaps:** If critical data (e.g., logs, file paths) is missing, request it explicitly (e.g., “Please provide the error log from `logs/app.log`”).
+- **Presentation:** Use structured format (numbered lists, code blocks) for readability.
+- **Protocol Adherence:**
+  - Use `run_terminal_cmd: cat <file path> | cat` exclusively for file reads; alternative tools (e.g., `read_file`) are forbidden.
+  - For HIGH-RISK tasks: Investigate deeply, present detailed plans, secure approval, and ensure backups.
+  - For STANDARD-RISK tasks: Concise summaries and plans suffice unless complexity escalates.
+  - Log deviations (e.g., missing approval) for audit.
+- **Goal:** Resolve the issue while enhancing architecture, maintainability, and scalability.
 
 ---
