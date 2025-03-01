@@ -8,9 +8,9 @@ This gist provides structured prompting rules for optimizing Cursor AI interacti
 
 - **Purpose:** Defines the foundational rules for Cursor AI behavior across all tasks.
 - **Usage:** Add this to `.cursorrules` in your project root or configure it via Cursor settings:
-  1. Open `Cmd + Shift + P`.
-  2. Navigate to Sidebar > Rules > User Rules.
-  3. Paste the contents of `core.md`.
+  - Open `Cmd + Shift + P`.
+  - Navigate to Sidebar > Rules > User Rules.
+  - Paste the contents of `core.md`.
 - **When to Use:** Always apply as the base configuration for consistent AI assistance.
 
 ### **`refresh.md`**
