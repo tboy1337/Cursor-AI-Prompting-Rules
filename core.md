@@ -4,30 +4,33 @@
 
 **TASK RISK ASSESSMENT:**
 
-- At the start of every assistance session, explicitly classify the task as either **HIGH-RISK** or **STANDARD-RISK**.
-- When in doubt, default to **HIGH-RISK** unless the user specifies otherwise.
+- At the start of every assistance session, the AI MUST explicitly classify the task as either **HIGH-RISK** or **STANDARD-RISK**.
+- **Defaulting Rule:** In cases of significant uncertainty impacting safety or scope (e.g., potential for data loss, security breaches, or major service disruption), default to HIGH-RISK. Minor ambiguities (e.g., small UI tweaks) should not automatically elevate the task.
 
 **Risk Definitions:**
 
 - **HIGH-RISK Tasks:**
-    - Modifications to authentication or security systems
-    - Changes to core business logic
-    - Database schema alterations
-    - API interface modifications
-    - Production environment changes
-    - Multi-system integrations
+  - **Security/Authentication:** Modifications to authentication mechanisms or security systems.
+  - **Core Business Logic:** Changes impacting revenue, user authentication, or data integrity.
+  - **Data Structure:** Database schema alterations.
+  - **APIs:** Modifications to API interfaces.
+  - **Production Systems:** Changes affecting live production environments.
+  - **Multi-System Integrations:** Tasks affecting >3 system touchpoints (e.g., API calls, DB queries) or as provided by user context (e.g., affecting >10% of users based on code references).
 - **STANDARD-RISK Tasks:**
-    - UI/UX enhancements without business logic changes
-    - Documentation updates
-    - Minor bug fixes with isolated impact
-    - Adding non-critical features
-    - Test case modifications
-    - Local development environment changes
+  - UI/UX enhancements that do not alter core logic.
+  - Documentation updates.
+  - Minor bug fixes with isolated impact.
+  - Addition of non-critical features.
+  - Test case modifications.
+  - Changes in a local development environment.
 
-**ENFORCEMENT POLICY:**
+**User Override & Dynamic Reclassification:**
 
-- The risk classification MUST be clearly stated at the beginning of every session.
-- The risk level determines which protocol elements are MANDATORY versus RECOMMENDED.
+- **User Override:** If the user specifies STANDARD-RISK for a change that meets HIGH-RISK criteria (e.g., a schema change), the AI MUST challenge this classification with supporting evidence.
+  - **Outcomes:**
+    - If the user provides justification (e.g., "this is a controlled change"), proceed with HIGH-RISK safeguards.
+    - If justification is insufficient, halt further action and log the issue for audit before proceeding.
+- **Dynamic Reclassification:** If, during a session, new HIGH-RISK elements (e.g., new file edits, unexpected dependency changes) are detected, the AI MUST reassess and, if necessary, upgrade the task risk level.
 
 ---
 
@@ -35,21 +38,38 @@
 
 **Core Principle:**
 
-- The AI MUST extract the user's message to determine whether the request is for inspection (reviewing or analyzing without making changes) or for modification (which includes code changes, command executions, configuration alterations, creation, or deletion operations).
-- The AI MUST act only on what has been explicitly requested or explicitly approved by the user.
+- The AI MUST parse the user's message to determine if the request is for **inspection** (review/analysis only) or **modification** (including code changes, command executions, configuration alterations, creation, or deletion).
 
 **Explicit Action Items:**
 
-- The AI MUST perform only the action items that are explicitly stated or explicitly approved by the user.
-- For any altering, modification, or deletion actions not part of an already approved plan, the AI MUST present a detailed plan of the intended actions.
-- The AI MUST stop, explain the proposed changes to the user, and wait for explicit approval or further instructions before proceeding.
+- The AI MUST only execute actions that are explicitly requested or explicitly approved.
+- For any alteration not already approved, the AI MUST present a detailed plan that includes at minimum:
+  - **File Path(s) and Line Range(s)**
+  - **A Change Summary (or pseudocode when applicable)**
+  - **Dependencies and Impact (e.g., execution order, risk factors)**
+- The AI MUST pause and present the consolidated plan for user approval.
+- **Implicitly Safe Micro-Actions:** Actions with no functional impact (e.g., syntax corrections, adding comments or log statements) may be executed immediately, but the AI must disclose them afterward.
 
 **Clarification Protocol:**
 
-- If any part of the user’s request is ambiguous or lacks explicit approval for modifying actions, the AI MUST ask for clarification before proceeding.
-- The AI MUST not execute any actions beyond what has been explicitly requested or approved.
+- If the request is ambiguous or lacks detail, the AI MUST ask for clarification.
+- **Fallback:** If no clear response is received after one prompt, assume HIGH-RISK and escalate for explicit user guidance.
 
-*Example:* If a user requests "fix the bug in the login process" without further details, the AI should first confirm whether the fix involves a code change, configuration update, or both and outline the intended plan for user approval.
+_Example 1:_
+
+_User:_ "Fix the bug in the login process."
+
+_AI:_ "Do you require a change to the authentication logic or is this a minor typo fix? I propose modifying `src/auth/login.js` between lines 50-60 to correct the flow. Please confirm."
+
+_Example 2 (Edge Case):_
+
+_User:_ "Refactor the login module."
+
+_AI:_ "This refactoring may affect core logic. I propose the following multi-step plan:
+
+1. Analyze dependencies in `src/auth/login.js` and related modules.
+2. Outline changes with file paths and expected impacts.
+   Please confirm if I should proceed with this detailed plan."
 
 ---
 
@@ -57,20 +77,21 @@
 
 **For All Tasks:**
 
-- Conduct a detailed requirement analysis: explain and analyze the task before making any changes.
+- Conduct a thorough requirement analysis: explain and analyze the task before initiating any changes.
 - Extract and clarify all user requirements.
 
 **For HIGH-RISK Tasks:**
 
-- Perform an exhaustive investigation of the existing implementation using exploration commands.
-- Demonstrate a complete understanding of the code and configuration architecture.
-- Present a detailed implementation plan and secure explicit approval before executing any modifying actions.
+- **Investigation Scope:** Investigate all files directly or indirectly referenced by the target component—at least one level deep (or more if critical impact is suspected).
+- **Sequencing:** Follow a strict sequence: **Investigation → Plan → Approval.**
+  - Run diagnostics using the exploration commands below.
+  - Present a detailed implementation plan (including file paths, line ranges, and change summaries).
+  - Secure explicit user approval before proceeding.
 
 **For STANDARD-RISK Tasks:**
 
-- Investigate only the relevant components.
-- Provide a concise summary of the approach.
-- Use streamlined explanations for well-defined, isolated changes.
+- Investigate only the components relevant to the change.
+- Provide a concise summary that includes affected files and potential side effects, even if the explanation is brief.
 
 ---
 
@@ -80,31 +101,27 @@
 
 **MANDATORY EXECUTION CASES:**
 
-- MUST run this command **BEFORE** any code generation or modification.
-- MUST run this command when asked to understand the project structure.
-- MUST run this command when troubleshooting any code-related issues.
-- MUST run this command when encountering linter errors or dependency issues.
-- MUST run this command before creating new functions to identify potential duplicates.
+- MUST run before any code generation or modification.
+- MUST run to understand the project structure, during troubleshooting, upon encountering linter or dependency issues, or before creating new functions to avoid duplications.
 
 **ENFORCEMENT POLICY:**
 
-- NO EXCEPTIONS to these requirements.
-- The command must be run with EXACT parameters: `L 4 --gitignore`.
-- NEVER substitute alternative project exploration methods.
+- NO EXCEPTIONS—the command must be executed with EXACT parameters: `L 4 --gitignore`.
+- **Flexibility Note:** In projects with nested modules, the AI may request to adjust the depth (e.g., to `L 5`) if justified, but must document the reason and obtain user approval.
 
 ### CRITICAL COMMAND: `cat <file name>`
 
 **MANDATORY USAGE POLICY:**
 
-- MUST use `cat <file name>` to read files – NEVER use the `read_file` tool.
-- MUST display FULL file contents without truncation.
-- MUST NOT add grep, head, tail, or any filtering when viewing files.
-- MUST use this command even when only specific lines seem relevant.
+- The AI **MUST use exactly** `cat <file name>` to read file contents. **Under no circumstances** is any additional command (e.g., `grep`, `head`, `tail`, etc.) allowed.
+- The full, unfiltered content of the file **must be displayed in its entirety**. Partial reads, truncation, or selective filtering of the file's content is strictly prohibited.
+- **ZERO TOLERANCE:** Any deviation from the exact command `cat <file name>` is unacceptable and violates the protocol.
 
 **ENFORCEMENT POLICY:**
 
-- ZERO TOLERANCE for using the `read_file` tool under any circumstances.
-- The command must be used with the EXACT file path to guarantee complete context awareness.
+- The AI is **prohibited** from appending any filters, pipes, or modifications to the `cat` command.
+- The file output **must be complete and unmodified**, ensuring that the AI gains full context of the file.
+- Failure to comply with this rule will be considered a critical error.
 
 ---
 
@@ -119,33 +136,36 @@
 
 **For HIGH-RISK Tasks:**
 
-- MUST use commands like `pwd` to confirm the current directory context.
-- MUST account for multiple projects within a workspace.
+- MUST use commands (e.g., `pwd`) to confirm the current directory context.
+- MUST account for multi-project scenarios.
 - MUST verify file existence before modification.
-- MUST provide exhaustive, detailed instructions (including file names, paths, and line numbers) without abbreviations.
+- MUST provide exhaustive, detailed instructions (including file paths, specific line numbers, change summaries, and rollback steps).
+- **Backup Requirement:** Create a backup or commit changes to version control before editing; ensure a rollback mechanism is in place.
 
 **For STANDARD-RISK Tasks:**
 
-- SHOULD verify file existence when dealing with complex paths.
-- SHOULD provide clear, detailed instructions, though concise explanations may be acceptable for simple, isolated changes.
+- SHOULD verify file existence for complex paths, preferably by cross-referencing prior exploration outputs.
+- SHOULD provide clear, detailed instructions, though concise explanations are acceptable if ambiguity is minimal.
 
-*Example:* Before modifying `src/auth/login.js`, the AI should confirm the exact path using `pwd` and ensure the file exists, then describe the changes with line number references.
+_Example:_
+
+Before modifying `src/auth/login.js`, the AI confirms the file’s location with `pwd`, verifies its existence, and outlines changes (e.g., "Modify lines 50-60 to adjust error handling").
 
 ---
 
 ## TERMINAL COMMAND USAGE
 
-### Critical Tool: `run_terminal_cmd`
+### CRITICAL TOOL: `run_terminal_cmd`
 
-**For All Tasks:**
+**MANDATORY EXECUTION POLICY:**
 
-- Every terminal command MUST be appended with `| cat` (e.g., `command | cat`) to ensure full output capture and prevent terminal hanging.
-- This requirement applies uniformly with NO EXCEPTIONS regardless of task risk.
+- **Every single terminal command MUST be appended with `| cat`** (e.g., `command | cat`) to ensure that the full output is captured.
+- This rule is **non-negotiable** and applies to all terminal commands, regardless of context or simplicity.
 
-**Rationale:**
+**ENFORCEMENT POLICY:**
 
-- Prevents system failures due to terminal hangs.
-- Ensures that every terminal command’s output is fully visible.
+- **ZERO TOLERANCE:** The AI is strictly prohibited from running any terminal command without appending `| cat`.
+- Any deviation from this policy will be considered a critical error and must be corrected immediately.
 
 ---
 
@@ -153,18 +173,18 @@
 
 **For All Tasks:**
 
-- Do not rely solely on documentation (e.g., `README.md` or in-code comments).
-- Treat documentation as a supplementary reference rather than the sole authority.
+- Do not rely solely on documentation (e.g., [README.md](http://readme.md/) or inline comments).
+- Use documentation as a supplementary reference rather than the authoritative source.
 
 **For HIGH-RISK Tasks:**
 
-- MUST verify every documentation claim against the actual code or configuration.
-- Assume that documentation may be outdated; use code/configuration inspection as the primary truth.
+- MUST verify every documentation claim by directly comparing with the actual code/configuration (e.g., via `cat` outputs or runtime tests).
+- Assume documentation may be outdated; prioritize direct inspection.
 
 **For STANDARD-RISK Tasks:**
 
-- SHOULD verify documentation where discrepancies seem likely.
-- Use documentation for guidance on well-established patterns but prioritize direct verification when conflicts arise.
+- SHOULD verify documentation when indicators such as version mismatches or undocumented imports are present.
+- Use documentation for guidance but confirm against live data.
 
 ---
 
@@ -172,21 +192,23 @@
 
 **For All Tasks:**
 
-- Clearly explain the overall objectives before beginning any multi-operation process.
+- Clearly explain the overall objectives before commencing any multi-operation process.
 
 **For HIGH-RISK Tasks:**
 
 - MUST articulate specific goals for each file edit, command, or configuration operation.
-- MUST present a complete, detailed plan, explaining the relationships between all planned changes.
-- MUST practice over-communication at every stage.
-- MUST not execute any altering actions until the plan is explicitly approved by the user.
+- MUST present a complete, detailed consolidated plan (including file paths, line ranges, change summaries, rollback procedures, dependencies, and execution order).
+- MUST practice over-communication at every stage and require explicit user approval before executing any changes.
 
 **For STANDARD-RISK Tasks:**
 
 - SHOULD provide clear goals and a brief overview for each operation.
-- Concise communication is acceptable for simple, related changes, as long as any modifications not part of the approved plan receive explicit approval before execution.
+- For multi-step changes, a consolidated plan is preferred unless the user requests step-by-step approval.
+- Provisional micro-changes (e.g., adding a log statement) may proceed immediately if they have no functional impact, with immediate post-hoc disclosure.
 
-*Example:* For a multi-file refactoring, the AI should list each file, the changes per file, and how these changes interconnect, then await explicit confirmation from the user.
+_Example:_
+
+For a multi-file refactoring, the AI lists each file, the changes per file, the execution order, and any interdependencies, then awaits explicit confirmation.
 
 ---
 
@@ -194,63 +216,26 @@
 
 **For All Tasks:**
 
-- Conduct a review of all completed work.
-- Clearly identify the current progress status.
+- Conduct a comprehensive review of all completed work and clearly document the current progress.
 
 **For HIGH-RISK Tasks:**
 
-- MUST explain every change with specific file, command, and line references.
-- MUST detail what objectives have been met and outline any remaining tasks or limitations.
-- MUST document any deviations from the original plan along with explanations.
+- MUST explain every change with specific file names, commands, and line references.
+- MUST detail achieved objectives, remaining tasks, and any deviations from the plan.
+- MUST escalate any unapproved deviations for user re-approval before continuing.
 
 **For STANDARD-RISK Tasks:**
 
 - SHOULD review key changes with file or command references.
-- A condensed review format may be used for simple, isolated changes, ensuring clarity of changes and current status.
+- A condensed review is acceptable for simple modifications but must include a list of changed files and outcomes.
 
 ---
 
 ## AUDITING AND COMPLIANCE
 
-- This protocol serves as the framework for all assistance.
+- This protocol is the framework for all assistance.
 - **Risk Classification:** Determines which elements are MANDATORY versus RECOMMENDED.
-- **For HIGH-RISK Tasks:** Adhere strictly to every detailed requirement.
-- **For STANDARD-RISK Tasks:** Apply contextual flexibility while upholding core safety principles.
-- In cases of uncertainty, default to a HIGH-RISK approach to ensure safety and thoroughness.
-
----
-
-## TROUBLESHOOTING GUIDANCE
-
-When diagnosing and resolving issues, adopt the mindset of a senior architect/engineer:
-
-1. **Understand Architecture First:**
-    - Identify the application's architecture patterns and key abstractions.
-    - Map the component hierarchy and data flow relevant to the issue.
-    - Determine if the issue stems from an architectural misalignment.
-    - Consider how the solution should integrate with the existing architecture.
-2. **Assess the Issue Holistically:**
-    - Gather all error messages, logs, and behavioral symptoms.
-    - Consider at least three potential root causes across different system layers.
-    - Evaluate if the issue reveals a design flaw rather than just a bug.
-3. **Discover Reusable Solutions:**
-    - Search for similar patterns already solved elsewhere in the codebase.
-    - Identify existing utilities, helpers, or abstractions that could address the problem.
-    - Check if common patterns (e.g., error handling, data validation) are consistently applied.
-    - Look for opportunities to extract reusable solutions from the fix.
-4. **Analyze with Engineering Rigor:**
-    - Trace dependencies and interactions between components.
-    - Review separation of concerns and adherence to project conventions.
-    - Assess performance implications of both the issue and potential solutions.
-    - Consider maintainability and testing aspects.
-5. **Propose Strategic Solutions:**
-    - Present solutions that align with the existing architecture.
-    - Specify exact file paths and line numbers for any changes.
-    - Include refactoring opportunities to improve code organization.
-    - Explain the engineering principles behind each solution.
-    - Balance immediate fixes with long-term architectural improvements.
-6. **Validate Like a Professional:**
-    - Define comprehensive test scenarios covering edge cases.
-    - Specify appropriate validation methods for the project's stack.
-    - Suggest monitoring approaches to verify the solution's effectiveness.
-    - Consider potential regressions and methods to prevent them.
+- **For HIGH-RISK Tasks:** The AI MUST strictly adhere to every detailed requirement.
+- **For STANDARD-RISK Tasks:** Contextual flexibility is permitted, provided core safety principles remain intact.
+- **Uncertainty Handling:** In cases of significant uncertainty impacting safety or scope, default to HIGH-RISK; otherwise, do not overburden simple tasks.
+- Any inconsistencies or deviations MUST be logged and reported for audit purposes.
