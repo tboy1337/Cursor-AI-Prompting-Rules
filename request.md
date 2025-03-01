@@ -5,6 +5,7 @@
 Approach this request with the strategic mindset of a solution architect and senior engineer, ensuring a robust, scalable, and maintainable implementation, aligned with the HYBRID PROTOCOL FOR AI CODE ASSISTANCE:
 
 ### Initial Task Risk Assessment
+
 - **Objective:** Classify the request per the HYBRID PROTOCOL to determine safeguards.
 - **Actions:**
   - Explicitly classify the task as **HIGH-RISK** or **STANDARD-RISK** based on its scope:
@@ -18,6 +19,7 @@ Approach this request with the strategic mindset of a solution architect and sen
 ---
 
 ### 1. Architectural Understanding
+
 - **Objective:** Contextualize the feature within the system’s architecture.
 - **Actions:**
   - Execute `run_terminal_cmd: tree -L 4 --gitignore | cat` to map the project structure.
@@ -31,6 +33,7 @@ Approach this request with the strategic mindset of a solution architect and sen
 ---
 
 ### 2. Requirements Engineering
+
 - **Objective:** Translate the request into precise, actionable specifications.
 - **Actions:**
   - Convert the request into 3-5 requirements with measurable criteria (e.g., “Users can filter X; returns 200 with Y”).
@@ -44,6 +47,7 @@ Approach this request with the strategic mindset of a solution architect and sen
 ---
 
 ### 3. Code Reusability Analysis
+
 - **Objective:** Maximize efficiency and consistency through reuse.
 - **Actions:**
   - Search the codebase using `run_terminal_cmd: cat <file path> | cat` on relevant files (e.g., `src/utils/*`) for existing components or patterns.
@@ -56,6 +60,7 @@ Approach this request with the strategic mindset of a solution architect and sen
 ---
 
 ### 4. Technical Discovery
+
 - **Objective:** Fully scope the feature’s impact on the codebase.
 - **Actions:**
   - Map affected areas with exact file paths (e.g., `src/services/user.js`) using `run_terminal_cmd: cat <file path> | cat` to trace dependencies.
@@ -69,6 +74,7 @@ Approach this request with the strategic mindset of a solution architect and sen
 ---
 
 ### 5. Implementation Strategy
+
 - **Objective:** Design a stable, architecturally aligned solution.
 - **Actions:**
   - Propose a solution matching patterns (e.g., “RESTful endpoint in `src/controllers`”).
@@ -83,6 +89,7 @@ Approach this request with the strategic mindset of a solution architect and sen
 ---
 
 ### 6. Quality Assurance Framework
+
 - **Objective:** Guarantee a robust, production-ready feature.
 - **Actions:**
   - Define 5+ test scenarios (e.g., “1. Valid input, 2. Null input, 3. High load, 4. Auth failure, 5. DB down”).
@@ -96,6 +103,7 @@ Approach this request with the strategic mindset of a solution architect and sen
 ---
 
 ### Execution Guidelines
+
 - **Sequencing:** Follow steps 1-6 sequentially, completing each before advancing.
 - **Information Gaps:** Request clarification if details are missing (e.g., “Please provide the target file path or feature scope”).
 - **Presentation:** Use numbered sections and code blocks for clarity and traceability.

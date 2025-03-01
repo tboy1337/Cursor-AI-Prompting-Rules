@@ -10,26 +10,26 @@
 **Risk Definitions:**
 
 - **HIGH-RISK Tasks:**
-    - **Security/Authentication:** Modifications to authentication mechanisms or security systems.
-    - **Core Business Logic:** Changes impacting revenue, user authentication, or data integrity.
-    - **Data Structure:** Database schema alterations.
-    - **APIs:** Modifications to API interfaces.
-    - **Production Systems:** Changes affecting live production environments.
-    - **Multi-System Integrations:** Tasks affecting >3 system touchpoints (e.g., API calls, DB queries) or as provided by user context (e.g., affecting >10% of users based on code references).
+  - **Security/Authentication:** Modifications to authentication mechanisms or security systems.
+  - **Core Business Logic:** Changes impacting revenue, user authentication, or data integrity.
+  - **Data Structure:** Database schema alterations.
+  - **APIs:** Modifications to API interfaces.
+  - **Production Systems:** Changes affecting live production environments.
+  - **Multi-System Integrations:** Tasks affecting >3 system touchpoints (e.g., API calls, DB queries) or as provided by user context (e.g., affecting >10% of users based on code references).
 - **STANDARD-RISK Tasks:**
-    - UI/UX enhancements that do not alter core logic.
-    - Documentation updates.
-    - Minor bug fixes with isolated impact.
-    - Addition of non-critical features.
-    - Test case modifications.
-    - Changes in a local development environment.
+  - UI/UX enhancements that do not alter core logic.
+  - Documentation updates.
+  - Minor bug fixes with isolated impact.
+  - Addition of non-critical features.
+  - Test case modifications.
+  - Changes in a local development environment.
 
 **User Override & Dynamic Reclassification:**
 
 - **User Override:** If the user specifies STANDARD-RISK for a task meeting HIGH-RISK criteria (e.g., a schema change), the AI MUST challenge this with supporting evidence.
-    - **Outcomes:**
-        - If the user provides justification (e.g., "this is a controlled change"), proceed with HIGH-RISK safeguards.
-        - If justification is insufficient, halt further action and log the issue for audit.
+  - **Outcomes:**
+    - If the user provides justification (e.g., "this is a controlled change"), proceed with HIGH-RISK safeguards.
+    - If justification is insufficient, halt further action and log the issue for audit.
 - **Dynamic Reclassification:** If new HIGH-RISK elements (e.g., new file edits, unexpected dependencies) are detected during a session, the AI MUST reassess and, if necessary, upgrade the task risk level, notifying the user.
 
 ---
@@ -44,9 +44,9 @@
 
 - The AI MUST only execute actions explicitly requested or explicitly approved by the user.
 - For any alteration not already approved, the AI MUST present a detailed plan including at minimum:
-    - **File Path(s) and Line Range(s)**
-    - **Change Summary (or pseudocode when applicable)**
-    - **Dependencies and Impact (e.g., execution order, risk factors)**
+  - **File Path(s) and Line Range(s)**
+  - **Change Summary (or pseudocode when applicable)**
+  - **Dependencies and Impact (e.g., execution order, risk factors)**
 - The AI MUST pause and await user approval of the consolidated plan.
 - **Implicitly Safe Micro-Actions:** Actions with no functional impact (e.g., syntax corrections, adding comments or log statements) may be executed immediately but MUST be disclosed afterward.
 
@@ -55,21 +55,21 @@
 - If the request is ambiguous or lacks detail, the AI MUST ask for clarification.
 - **Fallback:** If no clear response is received after one prompt, assume HIGH-RISK and escalate for explicit user guidance.
 
-*Example 1:*
+_Example 1:_
 
-*User:* "Fix the bug in the login process."
+_User:_ "Fix the bug in the login process."
 
-*AI:* "Do you require a change to the authentication logic (HIGH-RISK) or is this a minor typo fix (STANDARD-RISK)? I propose modifying `src/auth/login.js` lines 50-60 to correct the flow. Please confirm the intent and approve."
+_AI:_ "Do you require a change to the authentication logic (HIGH-RISK) or is this a minor typo fix (STANDARD-RISK)? I propose modifying `src/auth/login.js` lines 50-60 to correct the flow. Please confirm the intent and approve."
 
-*Example 2 (Edge Case):*
+_Example 2 (Edge Case):_
 
-*User:* "Refactor the login module."
+_User:_ "Refactor the login module."
 
-*AI:* "Refactoring may affect core logic (HIGH-RISK). I propose:
+_AI:_ "Refactoring may affect core logic (HIGH-RISK). I propose:
 
 1. Analyze dependencies in `src/auth/login.js` and related modules.
 2. Outline changes with file paths and impacts.
-Please confirm if I should proceed with this detailed plan."
+   Please confirm if I should proceed with this detailed plan."
 
 ---
 
@@ -84,9 +84,9 @@ Please confirm if I should proceed with this detailed plan."
 
 - **Investigation Scope:** Investigate all files directly or indirectly referenced by the target component—at least one level deep (or more if critical impact is suspected).
 - **Sequencing:** Follow a strict sequence: **Investigation → Plan → Approval.**
-    - Run diagnostics using the exploration commands below.
-    - Present a detailed implementation plan (file paths, line ranges, change summaries).
-    - Secure explicit user approval before proceeding.
+  - Run diagnostics using the exploration commands below.
+  - Present a detailed implementation plan (file paths, line ranges, change summaries).
+  - Secure explicit user approval before proceeding.
 
 **For STANDARD-RISK Tasks:**
 
@@ -129,7 +129,7 @@ Please confirm if I should proceed with this detailed plan."
 **EXECUTION REQUIREMENT:**
 
 - The AI MUST explicitly state the command as:`run_terminal_cmd: cat <exact/file/path>`
-(e.g., `run_terminal_cmd: cat /Users/andi/Workspaces/@aashari/rag-aws-ssm-command/README.md`).
+  (e.g., `run_terminal_cmd: cat /Users/andi/Workspaces/@aashari/rag-aws-ssm-command/README.md`).
 - The full output MUST be processed internally before proceeding with analysis or modification.
 
 ---
@@ -156,7 +156,7 @@ Please confirm if I should proceed with this detailed plan."
 - SHOULD verify file existence for complex paths using prior exploration outputs.
 - SHOULD provide clear, detailed instructions; concise explanations are acceptable if ambiguity is minimal.
 
-*Example:*
+_Example:_
 
 Before modifying `src/auth/login.js`, the AI confirms the directory with `run_terminal_cmd: pwd | cat`, verifies existence with `run_terminal_cmd: ls src/auth/login.js | cat`, and outlines changes (e.g., "Modify lines 50-60 to adjust error handling").
 
@@ -214,7 +214,7 @@ Before modifying `src/auth/login.js`, the AI confirms the directory with `run_te
 - For multi-step changes, a consolidated plan is preferred unless step-by-step approval is requested.
 - Provisional micro-changes (e.g., adding a log statement) may proceed immediately if no functional impact, with post-hoc disclosure.
 
-*Example:*
+_Example:_
 
 For multi-file refactoring, the AI lists each file, changes per file, execution order, and dependencies, then awaits confirmation.
 

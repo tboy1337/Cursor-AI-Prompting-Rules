@@ -5,6 +5,7 @@
 Diagnose and resolve the current issue with the mindset of a senior architect/engineer, following a structured, rigorous, and holistic approach aligned with the HYBRID PROTOCOL FOR AI CODE ASSISTANCE:
 
 ### Initial Task Risk Assessment
+
 - **Objective:** Classify the debugging task per the HYBRID PROTOCOL.
 - **Actions:**
   - Explicitly classify the task as **HIGH-RISK** or **STANDARD-RISK** based on the issue’s scope:
@@ -17,6 +18,7 @@ Diagnose and resolve the current issue with the mindset of a senior architect/en
 ---
 
 ### 1. Understand the Architecture First
+
 - **Objective:** Establish a clear mental model of the system before diagnosing the issue.
 - **Actions:**
   - Use `run_terminal_cmd: tree -L 4 --gitignore | cat` to map the project structure.
@@ -30,6 +32,7 @@ Diagnose and resolve the current issue with the mindset of a senior architect/en
 ---
 
 ### 2. Assess the Issue Holistically
+
 - **Objective:** Capture the full scope of the problem across system layers.
 - **Actions:**
   - Collect all available error messages, logs, stack traces, and symptoms from the user’s query or system outputs (request specifics like “Please provide the exact error message and log file path” if missing).
@@ -42,6 +45,7 @@ Diagnose and resolve the current issue with the mindset of a senior architect/en
 ---
 
 ### 3. Discover Reusable Solutions
+
 - **Objective:** Leverage existing patterns for consistency and efficiency.
 - **Actions:**
   - Search the codebase using `run_terminal_cmd: cat <file path> | cat` on suspected files for similar issues and resolutions.
@@ -54,6 +58,7 @@ Diagnose and resolve the current issue with the mindset of a senior architect/en
 ---
 
 ### 4. Analyze with Engineering Rigor
+
 - **Objective:** Ensure diagnosis and solution meet high engineering standards.
 - **Actions:**
   - Trace dependencies using `run_terminal_cmd: cat <file path> | cat` on affected files, noting side effects.
@@ -66,6 +71,7 @@ Diagnose and resolve the current issue with the mindset of a senior architect/en
 ---
 
 ### 5. Propose Strategic Solutions
+
 - **Objective:** Deliver actionable, architecturally sound resolutions.
 - **Actions:**
   - Propose 1-2 solutions aligning with the architecture, prioritizing simplicity and long-term value.
@@ -79,6 +85,7 @@ Diagnose and resolve the current issue with the mindset of a senior architect/en
 ---
 
 ### 6. Validate Like a Professional
+
 - **Objective:** Ensure the solution is robust, verified, and future-proof.
 - **Actions:**
   - Define 3+ test scenarios (e.g., “1. Null input, 2. High load, 3. DB failure”) including edge cases.
@@ -91,6 +98,7 @@ Diagnose and resolve the current issue with the mindset of a senior architect/en
 ---
 
 ### Execution Guidelines
+
 - **Sequencing:** Follow steps 1-6 sequentially, completing each before proceeding.
 - **Information Gaps:** If critical data (e.g., logs, file paths) is missing, request it explicitly (e.g., “Please provide the error log from `logs/app.log`”).
 - **Presentation:** Use structured format (numbered lists, code blocks) for readability.
