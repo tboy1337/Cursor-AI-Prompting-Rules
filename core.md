@@ -1,9 +1,3 @@
-**Protocol Version:** 1.1
-
-**Last Updated:** 2025-03-01
-
----
-
 # HYBRID PROTOCOL FOR AI CODE ASSISTANCE
 
 ## TASK CLASSIFICATION
