@@ -31,20 +31,42 @@
 
 ---
 
+## USER MESSAGE EXTRACTION AND ACTION ITEM CONFIRMATION
+
+**Core Principle:**
+
+- **Extract and Differentiate:**
+    - The AI MUST extract the user's message to identify whether the request is for an inspection (reviewing or analyzing without making changes) or for a modification (which includes code changes, command executions, configuration alterations, creation, or deletion operations).
+    - The AI MUST differentiate between these types and act only on what has been explicitly requested or explicitly approved by the user.
+
+**Explicit Action Items:**
+
+- **Approved Operations Only:**
+    - The AI MUST only perform the action items that are explicitly stated or explicitly approved by the user.
+    - For any altering, modification, or deletion actions not explicitly included in the previously approved plan, the AI MUST first present a detailed plan of the intended action.
+    - The AI MUST stop and explain the proposed changes to the user, waiting for explicit approval or further instructions before proceeding.
+
+**Clarification Protocol:**
+
+- If any part of the user’s request is ambiguous or lacks explicit approval for a modifying action, the AI MUST ask for clarification before proceeding.
+- The AI MUST strictly adhere to the provided instructions and must not perform additional modifications beyond what has been explicitly requested or approved.
+
+---
+
 ## PRE-IMPLEMENTATION PROCEDURE
 
 ### For All Tasks
 
 - **Requirement Analysis:**
-    - Explain and analyze the task before any code changes.
+    - Explain and analyze the task before any changes.
     - Extract and clarify all user requirements.
 
 ### For HIGH-RISK Tasks
 
 - **Exhaustive Investigation:**
     - Investigate the existing implementation thoroughly using `cat <file>` and `tree -L 4 --gitignore`.
-    - Demonstrate complete understanding of the code architecture.
-    - Present a detailed implementation plan and secure approval before any modifications.
+    - Demonstrate complete understanding of the code and configuration architecture.
+    - Present a detailed implementation plan and secure explicit approval before executing any modifying actions.
 
 ### For STANDARD-RISK Tasks
 
@@ -55,18 +77,18 @@
 
 ---
 
-## CODE EXPLORATION COMMANDS
+## CODE AND CONFIGURATION EXPLORATION COMMANDS
 
 ### `tree -L 4 --gitignore`
 
 **For All Tasks:**
 
-- Use this command when you need to understand the current directory structure.
+- Use this command to understand the current directory structure.
 
 **For HIGH-RISK Tasks:**
 
 - MUST run this command before any modifications.
-- MUST run it when troubleshooting code issues or before creating new functions to avoid duplications.
+- MUST run it when troubleshooting issues or before creating new functions to avoid duplications.
 
 **For STANDARD-RISK Tasks:**
 
@@ -77,12 +99,12 @@
 
 **For All Tasks:**
 
-- Use `cat <file name>` to read files. **Never use `read_file`** to ensure full context.
+- Use `cat <file name>` to read file contents. **Never use `read_file`** to ensure full context.
 
 **For HIGH-RISK Tasks:**
 
 - MUST display full file contents without any filtering (no grep, head, or tail).
-- MUST use it even if only specific lines seem relevant.
+- MUST use it even if only specific lines are relevant.
 
 **For STANDARD-RISK Tasks:**
 
@@ -140,13 +162,13 @@
 
 **For HIGH-RISK Tasks:**
 
-- MUST verify every documentation claim against the actual code.
-- Assume documentation may be outdated; use code inspection as the primary truth.
+- MUST verify every documentation claim against the actual code or configuration.
+- Assume documentation may be outdated; use code/configuration inspection as the primary truth.
 
 **For STANDARD-RISK Tasks:**
 
 - SHOULD verify documentation where discrepancies seem likely.
-- Use documentation for guidance on well-established patterns but prioritize code verification when conflicts arise.
+- Use documentation for guidance on well-established patterns but prioritize verification when conflicts arise.
 
 ---
 
@@ -158,14 +180,16 @@
 
 **For HIGH-RISK Tasks:**
 
-- MUST articulate specific goals for each file edit or tool operation.
+- MUST articulate specific goals for each file edit, command, or configuration operation.
 - MUST provide a complete and detailed plan, explaining the relationships between all planned changes.
 - MUST practice over-communication at every stage.
+- MUST not execute any altering actions until the plan is explicitly approved by the user.
 
 **For STANDARD-RISK Tasks:**
 
 - SHOULD provide clear goals and a brief overview for each operation.
 - Concise communication is acceptable for simple, related changes as long as the overall strategy is clear.
+- Confirm that any changes not part of the previously approved plan are explicitly approved before execution.
 
 ---
 
@@ -178,13 +202,13 @@
 
 **For HIGH-RISK Tasks:**
 
-- MUST explain every change with specific file and line references.
+- MUST explain every change with specific file, command, and line references.
 - MUST detail what objectives have been met and outline any remaining tasks or limitations.
 - MUST document any deviations from the original plan along with explanations.
 
 **For STANDARD-RISK Tasks:**
 
-- SHOULD review key changes with file references.
+- SHOULD review key changes with file or command references.
 - A condensed review format may be used for simple, isolated changes.
 - Ensure that changes and the current status remain clear.
 
@@ -192,8 +216,10 @@
 
 ## AUDITING AND COMPLIANCE
 
-- This protocol serves as the framework for all code assistance.
+- This protocol serves as the framework for all assistance.
 - **Risk Classification:** Determines which elements are MANDATORY versus RECOMMENDED.
 - **For HIGH-RISK Tasks:** Adhere strictly to every detailed requirement.
 - **For STANDARD-RISK Tasks:** Apply contextual flexibility while upholding core safety principles.
 - In cases of uncertainty, default to a HIGH-RISK approach to ensure safety and thoroughness.
+
+---
