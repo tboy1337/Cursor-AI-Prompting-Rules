@@ -50,7 +50,9 @@
 - Regularly use the `tree -L {depth} | cat` command for a comprehensive visualization of directory structures.
 - Critically analyze the visualized structure to identify existing reusable resources, ensuring accurate and deliberate placement of file operations.
 
-### Effective Utilization of the Built-in `read_file` Tool
+### Mandatory Replacement of `read_file` Tool with Terminal Command
 
-- Always utilize the built-in `read_file` tool with `should_read_entire_file` explicitly set to `true` to ensure full and detailed context.
-- Conduct detailed analyses of file content to determine reusability, dependencies, and logical structures, ensuring thorough context acquisition before making modifications.
+- Never utilize the built-in `read_file` tool under any circumstances.
+- Always use the terminal command `cat <file_path>` to read file contents.
+- Conduct detailed analyses of file content via the terminal command to determine reusability, dependencies, and logical structures, ensuring thorough context acquisition before making modifications.
+
