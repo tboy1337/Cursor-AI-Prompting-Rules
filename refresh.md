@@ -1,43 +1,37 @@
-{my query (e.g. it is still showing an error)}
+{my query (e.g., "the login button still crashes")}
 
 ---
 
-Diagnose and resolve the current issue with the mindset of a senior architect/engineer:
+Diagnose and resolve the issue described above with a systematic, validation-driven approach:
 
-1. **Understand Architecture First**:
-   - Identify the application's architecture patterns and key abstractions
-   - Map the component hierarchy and data flow relevant to the issue
-   - Determine if the issue stems from architectural misalignment
-   - Consider how the solution should fit into the existing architecture
+1. **Gather Comprehensive Context**:
+   - Collect all relevant error messages, logs, and observed behaviors related to the issue.
+   - Identify the affected components, files, and their dependencies using tools like `grep_search` for exact matches or `codebase_search` for semantic context.
+   - Map the data flow and interactions leading to the issue to pinpoint its scope.
 
-2. **Assess the Issue Holistically**:
-   - Gather all error messages, logs, and behavioral symptoms
-   - Consider at least 3 potential root causes at different system layers
-   - Evaluate if the issue reveals a design flaw rather than just a bug
+2. **Hypothesize and Investigate**:
+   - Propose at least three potential root causes across different layers (e.g., code logic, dependencies, configuration).
+   - Use `cat -n <file path>` to review file contents with line numbers and `tree -L 4 --gitignore | cat` to explore directory structure for related resources.
+   - Validate each hypothesis by tracing execution paths and checking for inconsistencies or missing dependencies.
 
-3. **Discover Reusable Solutions**:
-   - Search for similar patterns already solved elsewhere in the codebase
-   - Identify existing utilities, helpers, or abstractions that could address the problem
-   - Check if common patterns (error handling, data validation, etc.) are consistently applied
-   - Look for opportunities to extract reusable solutions from the fix
+3. **Leverage Existing Solutions**:
+   - Search the codebase with `codebase_search` for similar issues or patterns already resolved.
+   - Identify reusable utilities, error-handling mechanisms, or abstractions that could address the problem.
+   - Ensure consistency with existing conventions by cross-referencing current implementations.
 
-4. **Analyze with Engineering Rigor**:
-   - Trace dependencies and interactions between components
-   - Review separation of concerns and adherence to project conventions
-   - Assess performance implications of the issue and potential solutions
-   - Consider maintainability and testing aspects
+4. **Analyze with Precision**:
+   - Trace all dependencies (e.g., imports, function calls, APIs) impacted by the issue.
+   - Assess whether the issue reflects a deeper design flaw or a localized bug.
+   - Evaluate potential performance or maintainability impacts of both the issue and proposed fixes.
 
-5. **Propose Strategic Solutions**:
-   - Present solutions that align with the existing architecture
-   - Specify exact file paths and line numbers for changes
-   - Include refactoring opportunities that improve code organization
-   - Explain the engineering principles behind each solution
-   - Balance immediate fixes with long-term architectural improvements
+5. **Resolve Strategically**:
+   - Propose targeted solutions with specific file paths and line numbers for changes.
+   - Balance immediate resolution with improvements to code structure or reusability.
+   - Explain the reasoning behind each fix, focusing on stability and alignment with system design.
 
-6. **Validate Like a Professional**:
-   - Define comprehensive test scenarios covering edge cases
-   - Specify appropriate validation methods for the project's stack
-   - Suggest monitoring approaches to verify the solution's effectiveness
-   - Consider potential regressions and how to prevent them
+6. **Validate Thoroughly**:
+   - Define test scenarios, including edge cases, to confirm the issue is resolved.
+   - Suggest validation methods (e.g., unit tests, manual checks) appropriate to the project.
+   - Recommend monitoring or logging to ensure the fix holds over time and prevents regressions.
 
-This approach ensures solutions that not only fix the immediate issue but strengthen the codebase's architecture and maintainability.
+This approach ensures a methodical resolution that strengthens the codebase while addressing the issue effectively.

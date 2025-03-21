@@ -1,46 +1,37 @@
-{my request (e.g. Develop feature xyz)}
+{my request (e.g., "add a save button")}
 
 ---
 
-Approach this request with the strategic mindset of a solution architect and senior engineer:
+Design and implement the request described above with a systematic, validation-driven approach:
 
-1. **Architectural Understanding**:
-   - Map the application's current architecture patterns and conventions
-   - Identify domain models, abstractions, and organizational principles
-   - Determine where the requested feature naturally fits within this structure
-   - Consider how the feature aligns with the system's overall design philosophy
+1. **Understand the System Context**:
+   - Analyze the current codebase structure using `tree -L 4 --gitignore | cat` to identify where the feature fits.
+   - Review existing patterns, conventions, and domain models with `codebase_search` to ensure alignment.
+   - Map out integration points and affected components based on the request’s scope.
 
-2. **Requirements Engineering**:
-   - Transform the request into clear requirements with acceptance criteria
-   - Identify stakeholders and potential use cases for the feature
-   - Define technical constraints and non-functional requirements
-   - Establish boundaries to maintain architectural integrity
+2. **Define Clear Requirements**:
+   - Break the request into specific, testable requirements with acceptance criteria.
+   - Identify use cases, constraints, and non-functional needs (e.g., performance, security).
+   - Establish boundaries to keep the implementation focused and maintainable.
 
-3. **Code Reusability Analysis**:
-   - Search for existing components, utilities, or patterns that can be leveraged
-   - Identify opportunities to extract reusable abstractions during implementation
-   - Assess if the feature should be implemented as a reusable module for future use
-   - Review similar implementations across the codebase for consistency
+3. **Explore Reusability**:
+   - Use `codebase_search` to find existing components or utilities that can be adapted for this feature.
+   - Check for similar implementations with `grep_search` to maintain consistency across the codebase.
+   - Plan for potential abstraction if the feature could be reused elsewhere.
 
-4. **Technical Discovery**:
-   - Map all affected areas of the codebase with specific file paths
-   - Analyze cross-cutting concerns (authentication, logging, error handling, etc.)
-   - Evaluate integration points and API boundaries
-   - Consider how the implementation will affect system behaviors and performance
-   - Assess test coverage and documentation needs
+4. **Plan the Implementation**:
+   - Identify all files and dependencies requiring changes, specifying relative paths from the workspace root.
+   - Assess cross-cutting concerns (e.g., logging, error handling) and integration needs.
+   - Evaluate impacts on performance, testing, and documentation, planning accordingly.
 
-5. **Implementation Strategy**:
-   - Design a solution that follows established architectural patterns
-   - Break down implementation into incremental steps that preserve system stability
-   - Detail specific code changes with before/after comparisons
-   - Highlight opportunities to improve existing code organization
-   - Preserve separation of concerns and maintain appropriate abstraction levels
+5. **Execute with Structure**:
+   - Propose a step-by-step implementation that preserves system stability at each stage.
+   - Provide detailed code changes with before/after examples, adhering to project conventions.
+   - Highlight opportunities to enhance code organization or separation of concerns.
 
-6. **Quality Assurance Framework**:
-   - Define comprehensive test scenarios across unit, integration, and system levels
-   - Establish criteria for successful implementation
-   - Create a validation plan that includes performance and security considerations
-   - Suggest monitoring metrics to ensure long-term stability
-   - Include rollback procedures and feature toggles if appropriate
+6. **Ensure Quality and Stability**:
+   - Define comprehensive test scenarios (unit, integration, end-to-end) to validate the feature.
+   - Suggest validation methods and monitoring metrics to confirm successful deployment.
+   - Include contingency plans (e.g., rollback steps) to mitigate risks during integration.
 
-This architectural approach ensures the feature integrates seamlessly while strengthening the codebase's overall design and maintainability.
+This approach delivers a well-integrated feature that enhances the codebase’s design and reliability.
