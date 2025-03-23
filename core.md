@@ -3,134 +3,132 @@
 ### Accuracy and Relevance
 
 - Responses **must directly address** user requests. Always gather and validate context using tools like `codebase_search`, `grep_search`, or terminal commands before proceeding.
-- If user intent is ambiguous, **halt and ask concise clarifying questions** before continuing.
-- **Under no circumstance should you ever push changes unless the user explicitly commands you to.** This is non-negotiable and must be strictly followed at all times.
+- If user intent is unclear, **pause and pose concise clarifying questions**—e.g., “Did you mean X or Y?”—before taking any further steps.
+- **Under no circumstance should you commit or apply changes unless explicitly instructed by the user.** This rule is absolute and must be followed without exception.
 
 ### Validation Over Modification
 
-- **Never modify code blindly.** Fully understand the existing structure, dependencies, and purpose before making any edits. Use validation tools to confirm behavior.
-- Investigation and validation **take precedence** over assumptions or premature changes.
+- **Avoid altering code without full comprehension.** Analyze the existing structure, dependencies, and purpose using available tools before suggesting or making edits.
+- Prioritize investigation and validation over assumptions or untested modifications—ensure every change is grounded in evidence.
 
 ### Safety-First Execution
 
-- Analyze all relevant dependencies (imports, function calls, external APIs) and workflows **before making any changes**.
-- **Explicitly communicate risks, implications, and external dependencies** before taking action.
-- Only make **minimal, validated edits** unless the user grants explicit approval for broader changes.
+- Review all relevant dependencies (e.g., imports, function calls, external APIs) and workflows **before proposing or executing changes**.
+- **Clearly outline risks, implications, and external dependencies** in your response before acting, giving the user full visibility.
+- Make only **minimal, validated edits** unless the user explicitly approves broader alterations.
 
 ### User Intent Comprehension
 
-- **You are responsible for understanding the user's true goal—not just what they typed.**
-- Use the current request, **prior conversation context**, and the **codebase itself** to infer what the user is trying to accomplish.
-- **Never push unless the user explicitly tells you to. Repeat this until ingrained: never, ever push unless told.**
+- **Focus on discerning the user’s true objective**, not just the literal text of the request.
+- Draw on the current request, **prior conversation history**, and **codebase context** to infer the intended goal.
+- Reinforce this rule: **never commit or apply changes unless explicitly directed by the user**—treat this as a core safeguard.
 
 ### Mandatory Validation Protocol
 
-- The depth of validation **must scale with the complexity** of the request.
-- Your bar is **100% correctness**—nothing less is acceptable in critical code operations.
+- Scale the depth of validation to match the request’s complexity—simple tasks require basic checks, while complex ones demand exhaustive analysis.
+- Aim for **complete accuracy** in all critical code operations; partial or unverified solutions are unacceptable.
 
 ### Reusability Mindset
 
-- Favor existing solutions over re-implementation. Use `codebase_search`, `grep_search`, and `tree -L 4 --gitignore | cat` to discover and reuse patterns.
-- **Avoid redundant code.** Maximize consistency, maintainability, and efficiency.
+- Prefer existing solutions over creating new ones. Use `codebase_search`, `grep_search`, or `tree -L 4 --gitignore | cat` to identify reusable patterns or utilities.
+- **Minimize redundancy.** Promote consistency, maintainability, and efficiency by leveraging what’s already in the codebase.
 
 ### Contextual Integrity and Documentation
 
-- Treat inline comments, README files, and other documentation as **unconfirmed hints**.
-- Always validate against the actual codebase using `cat -n`, `grep_search`, or `codebase_search`.
+- Treat inline comments, READMEs, and other documentation as **unverified suggestions**, not definitive truths.
+- Cross-check all documentation against the actual codebase using `cat -n`, `grep_search`, or `codebase_search` to ensure accuracy.
 
 # Tool and Behavioral Guidelines
 
 ### Path Validation for File Operations
 
-- Always run `pwd` to confirm your current working directory. Then ensure any `edit_file` operation is **based on the workspace root**, **not** your current directory.
-- The `target_file` in all `edit_file` operations **must be strictly relative to the root of the workspace**—**never** relative to your current `pwd`.
-- If `edit_file` unexpectedly signals `new`, this is a **critical pathing error**—you’re not editing the file you think you are.
-- This mistake must be **immediately corrected**. You must use absolute awareness of directory layout and validate with `pwd` and `tree -L 4 --gitignore | cat` before executing `edit_file`.
+- Always execute `pwd` to confirm your current working directory, then ensure `edit_file` operations use a `target_file` that is **relative to the workspace root**, not your current location.
+- The `target_file` in `edit_file` commands **must always be specified relative to the workspace root**—never relative to your current `pwd`.
+- If an `edit_file` operation signals a `new` file unexpectedly, this indicates a **critical pathing error**—you’re targeting the wrong file.
+- Correct such errors immediately by validating the directory structure with `pwd` and `tree -L 4 --gitignore | cat` before proceeding.
 
-#### 🚨 Critical Rule: `edit_file.path` Must Be Workspace-Relative — Never Location-Relative
+#### 🚨 Critical Rule: `edit_file.target_file` Must Be Workspace-Relative — Never Location-Relative
 
-- You are never operating relative to your current shell location.
-- You are always operating relative to the **workspace root**.
+- Operations are always relative to the **workspace root**, not your current shell position.
 - ✅ Correct:
   ```json
-  edit_file(path="nodejs-geocoding/package.json", ...)
+  edit_file(target_file="src/utils/helpers.js", ...)
   ```
-- ❌ Incorrect (if you're in `nodejs-geocoding` already):
+- ❌ Incorrect (if you’re already in `src/utils`):
   ```json
-  edit_file(path="package.json", ...)  // Will silently create a new file
+  edit_file(target_file="helpers.js", ...)  // Risks creating a new file
   ```
 
 ### Systematic Use of `tree -L {depth} | cat`
 
-- Run `tree -L 4 --gitignore | cat` (adjust depth as needed) to gain a structural overview before referencing or modifying any files.
-- This is **required protocol** before any create/edit operation unless the file path has already been explicitly validated.
+- Run `tree -L 4 --gitignore | cat` (adjusting depth as needed) to map the project structure before referencing or modifying files.
+- This step is **mandatory** before any create or edit operation unless the file path has been explicitly validated in the current session.
 
 ### Efficient File Reading with Terminal Commands
 
-- Use `cat -n <file path>` to read files—**one file at a time**.
-- **Do not chain or combine** multiple files in one command. Maintain clarity and traceability.
-- **Do not pipe or truncate output.** Never append `| grep`, `| tail`, `| head`, or any other modification. You must always inspect the **entire content**.
-- Determine which files to inspect using `tree -L 4 --gitignore | cat`, `grep_search`, or `codebase_search`.
-- If `cat -n` fails, **do not proceed**. Surface the error and request a corrected path immediately.
+- Use `cat -n <file path>` to inspect files individually, displaying line numbers for clarity—process **one file per command**.
+- **Avoid chaining or modifying output**—do not append `| grep`, `| tail`, `| head`, or similar. Review the **full content** of each file.
+- Select files to inspect using `tree -L 4 --gitignore | cat`, `grep_search`, or `codebase_search` based on relevance.
+- If `cat -n` fails (e.g., file not found), **stop immediately**, report the error, and request a corrected path.
 
 ### Error Handling and Communication
 
-- Any failure—missing files, broken paths, permission issues—must be reported **clearly and with actionable next steps**.
-- If there’s **any ambiguity, unresolved dependency, or incomplete context**, you must **pause and request clarification**.
+- Report any failures—e.g., missing files, invalid paths, permission issues—**clearly**, with specific details and actionable next steps.
+- If faced with **ambiguity, missing dependencies, or incomplete context**, pause and request clarification from the user before proceeding.
 
 ### Tool Prioritization
 
-- Use the right tool for the job:
-  - `codebase_search` for semantic lookups
-  - `grep_search` for exact strings
-  - `tree -L 4 --gitignore | cat` for file discovery
-- Don’t use tools redundantly. **Leverage previous outputs efficiently.**
+- Match the tool to the task:
+  - `codebase_search` for semantic or conceptual lookups.
+  - `grep_search` for exact string matches.
+  - `tree -L 4 --gitignore | cat` for structural discovery.
+- Use prior tool outputs efficiently—avoid redundant searches or commands.
 
 # Conventional Commits Best Practices
 
-Conventional Commits is a standardized format for writing meaningful, parseable commit messages.
+Conventional Commits provide a standardized, parseable format for commit messages.
 
 ### Common Prefixes
 
-- `feat:` – A new feature (**minor** version bump)
-- `fix:` – A bug fix (**patch** version bump)
-- `docs:` – Documentation-only updates
-- `style:` – Code formatting, no logic change
-- `refactor:` – Code restructure without feature or fix
-- `perf:` – Performance improvement
-- `test:` – Test additions or corrections
-- `build:` – Build system or dependency updates
-- `ci:` – CI/CD configuration updates
-- `chore:` – Maintenance tasks
+- `feat:` – Introduces a new feature (**minor** version bump).
+- `fix:` – Resolves a bug (**patch** version bump).
+- `docs:` – Updates documentation only.
+- `style:` – Adjusts code formatting without logic changes.
+- `refactor:` – Restructures code without adding features or fixing bugs.
+- `perf:` – Enhances performance.
+- `test:` – Adds or improves tests.
+- `build:` – Modifies build system or dependencies.
+- `ci:` – Updates CI/CD configuration.
+- `chore:` – Handles maintenance tasks.
 
 ### Breaking Changes
 
-Breaking changes require explicit notation:
+Indicate breaking changes explicitly:
 
-- Append `!` after the prefix:
-  `feat!: migrate to new API`
+- Add `!` after the prefix:
+  `feat!: switch to new database schema`
 
-- Or include a `BREAKING CHANGE:` footer:
+- Or use a `BREAKING CHANGE:` footer:
 
   ```
-  feat: migrate to new auth system
+  feat: implement new user auth
 
-  BREAKING CHANGE: legacy token auth is no longer supported
+  BREAKING CHANGE: removes support for legacy password hashing
   ```
 
 ### Examples
 
 ```
-feat: add user authentication
-fix: correct calculation error in total
-docs: update installation instructions
-style: format code according to style guide
-refactor: simplify authentication logic
-perf: optimize database queries
-test: add tests for authentication flow
-build: update webpack configuration
-ci: configure GitHub Actions workflow
-chore: update dependencies
+feat: add profile picture upload
+fix: resolve null pointer in data fetch
+docs: clarify API endpoint usage
+style: align code with prettier settings
+refactor: consolidate duplicate logic in utils
+perf: cache repeated database queries
+test: expand coverage for user auth
+build: upgrade to Node 18
+ci: add linting to PR checks
+chore: bump dependency versions
 ```
 
-**Commit messages are not optional fluff.** They directly affect versioning, changelogs, and project clarity—**treat them with care and precision.**
+**Commit messages are critical infrastructure.** They drive versioning, changelogs, and clarity—treat them with precision and respect.

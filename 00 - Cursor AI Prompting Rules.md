@@ -1,37 +1,50 @@
-# Cursor AI Prompting Rules
+# Cursor AI Prompting Framework
 
-This gist provides structured prompting rules for optimizing Cursor AI interactions. It includes three key files to streamline AI behavior for different tasks.
+This repository provides a structured set of prompting rules to optimize interactions with Cursor AI. It includes three key files to guide the AI’s behavior across various coding tasks.
 
-## Files and Usage
+## Files and Their Roles
 
 ### **`core.md`**
-
-- **Purpose:** Defines the foundational rules for Cursor AI behavior across all tasks.
-- **Usage:** Add this to `.cursorrules` in your project root or configure it via Cursor settings:
-  - Open `Cmd + Shift + P`.
-  - Navigate to Sidebar > Rules > User Rules.
-  - Paste the contents of `core.md`.
-- **When to Use:** Always apply as the base configuration for consistent AI assistance.
+- **Purpose**: Establishes foundational rules for consistent AI behavior across all tasks.
+- **Usage**: Place this file in your project’s `.cursor/rules/` folder to apply it persistently:
+  - Save `core.md` under `.cursor/rules/` in the workspace root.
+  - Cursor automatically applies rules from this folder to all AI interactions.
+- **When to Use**: Always include as the base configuration for reliable, codebase-aware assistance.
 
 ### **`refresh.md`**
-
-- **Purpose:** Guides the AI to debug, fix, or resolve issues, especially when it loops on the same files or overlooks relevant dependencies.
-- **Usage:** Use this as a prompt when encountering persistent errors or incomplete fixes.
-- **When to Use:** Apply when the AI needs to reassess the issue holistically (e.g., “It’s still showing an error”).
+- **Purpose**: Directs the AI to diagnose and fix persistent issues, such as bugs or errors.
+- **Usage**: Use as a situational prompt:
+  - Copy the contents of `refresh.md`.
+  - Replace `{my query}` with your specific issue (e.g., "the login button still crashes").
+  - Paste into Cursor’s AI input (chat or composer).
+- **When to Use**: Apply when debugging or resolving recurring problems—e.g., “It’s still broken after the last fix.”
 
 ### **`request.md`**
+- **Purpose**: Guides the AI to implement new features or modify existing code.
+- **Usage**: Use as a situational prompt:
+  - Copy the contents of `request.md`.
+  - Replace `{my request}` with your task (e.g., "add a save button").
+  - Paste into Cursor’s AI input.
+- **When to Use**: Apply for starting development tasks—e.g., “Build feature X” or “Update function Y.”
 
-- **Purpose:** Instructs the AI to handle initial requests like creating new features or adjusting existing code.
-- **Usage:** Use this as a prompt for starting new development tasks.
-- **When to Use:** Apply for feature development or initial modifications (e.g., “Develop feature XYZ”).
+## Setup Instructions
 
-## How to Use
+1. **Clone or Download**: Get this repository locally.
+2. **Configure Core Rules**:
+   - Create a `.cursor/rules/` folder in your project’s root (if it doesn’t exist).
+   - Copy `core.md` into `.cursor/rules/` to set persistent rules.
+3. **Apply Situational Prompts**:
+   - For debugging: Use `refresh.md` by copying, editing `{my query}`, and submitting.
+   - For development: Use `request.md` by copying, editing `{my request}`, and submitting.
 
-1. Clone or download this gist.
-2. Configure `core.md` in your Cursor AI settings or `.cursorrules` for persistent rules.
-3. Use `refresh.md` or `request.md` as prompts by copying their contents into your AI input when needed, replacing placeholders (e.g., `{my query}` or `{my request}`) with your specific task.
+## Usage Tips
+
+- **Project Rules**: The `.cursor/rules/` folder is Cursor’s modern system (replacing the legacy `.cursorrules` file). Add additional rule files here as needed.
+- **Placeholders**: Always replace `{my query}` or `{my request}` with specific details before submitting prompts.
+- **Adaptability**: These rules are optimized for Cursor AI but can be tweaked for other AI tools with similar capabilities.
 
 ## Notes
 
-- These rules are designed to work with Cursor AI’s prompting system but can be adapted for other AI tools.
-- Ensure placeholders in `refresh.md` and `request.md` are updated with your specific context before submission.
+- Ensure file paths in prompts (e.g., for `edit_file`) are relative to the workspace root, per `core.md`.
+- Test prompts in small steps to verify AI behavior aligns with your project’s needs.
+- Contributions or suggestions to improve this framework are welcome!
