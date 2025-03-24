@@ -86,49 +86,83 @@
 
 # Conventional Commits Best Practices
 
-Conventional Commits provide a standardized, parseable format for commit messages.
+Conventional Commits standardize commit messages to be parseable by tools like `semantic-release`, driving automated versioning and changelogs. Precision in commit messages is critical for clarity and automation.
 
-### Common Prefixes
+### Structure
 
-- `feat:` – Introduces a new feature (**minor** version bump).
-- `fix:` – Resolves a bug (**patch** version bump).
-- `docs:` – Updates documentation only.
-- `style:` – Adjusts code formatting without logic changes.
-- `refactor:` – Restructures code without adding features or fixing bugs.
-- `perf:` – Enhances performance.
-- `test:` – Adds or improves tests.
-- `build:` – Modifies build system or dependencies.
-- `ci:` – Updates CI/CD configuration.
-- `chore:` – Handles maintenance tasks.
+- Format: `<type>(<scope>): <description>`
+  - **type**: Defines the change’s intent (e.g., `feat`, `fix`).
+  - **scope** (optional): Specifies the affected area (e.g., `auth`, `ui`).
+  - **description**: Concise, imperative summary (e.g., “add login endpoint”).
+- Optional **body**: Additional details (use newlines after the subject).
+- Optional **footer**: Metadata like `BREAKING CHANGE:` or issue references.
 
-### Breaking Changes
+### Key Types and Their Impact
 
-Indicate breaking changes explicitly:
+These types align with `semantic-release` defaults (Angular convention):
 
-- Add `!` after the prefix:
-  `feat!: switch to new database schema`
+- **`feat:`** – New feature; triggers a **minor** version bump (e.g., `1.2.3` → `1.3.0`).
+  - Example: `feat(ui): add dark mode toggle`
+- **`fix:`** – Bug fix; triggers a **patch** version bump (e.g., `1.2.3` → `1.2.4`).
+  - Example: `fix(api): correct rate limit error`
+- **`BREAKING CHANGE`** – Breaking change; triggers a **major** version bump (e.g., `1.2.3` → `2.0.0`).
+  - Indicate with:
+    - `!` after type: `feat(auth)!: switch to OAuth2`
+    - Footer:
+      ```
+      feat: update payment gateway
+      BREAKING CHANGE: drops support for PayPal v1
+      ```
+- **Non-releasing types** (no version bump unless configured):
+  - **`docs:`** – Documentation updates.
+    - Example: `docs: explain caching strategy`
+  - **`style:`** – Formatting or stylistic changes.
+    - Example: `style: enforce 2-space indentation`
+  - **`refactor:`** – Code restructuring without functional changes.
+    - Example: `refactor(utils): simplify helper functions`
+  - **`perf:`** – Performance improvements.
+    - Example: `perf(db): index user queries`
+  - **`test:`** – Test additions or updates.
+    - Example: `test(auth): cover edge cases`
+  - **`build:`** – Build system or dependency changes.
+    - Example: `build: upgrade to webpack 5`
+  - **`ci:`** – CI/CD configuration updates.
+    - Example: `ci: add test coverage reporting`
+  - **`chore:`** – Maintenance tasks.
+    - Example: `chore: update linting rules`
 
-- Or use a `BREAKING CHANGE:` footer:
+### Guidelines for Effective Commits
 
+- **Be Specific**: Use scopes to pinpoint changes (e.g., `feat(auth): add JWT validation` vs. `feat: add stuff`).
+- **Keep It Concise**: Subject line < 50 characters; use body for details.
+  - Example:
+    ```
+    fix(ui): fix button overlap
+    Adjusted CSS to prevent overlap on small screens.
+    ```
+- **Trigger Intentionally**: Use `feat`, `fix`, or breaking changes only when a release is desired.
+- **Avoid Ambiguity**: Write imperative, actionable descriptions (e.g., “add endpoint” not “added endpoint”).
+- **Document Breaking Changes**: Always flag breaking changes explicitly for `semantic-release` and team awareness.
+
+### Examples with Context
+
+- **Minor Bump**:
   ```
-  feat: implement new user auth
-
-  BREAKING CHANGE: removes support for legacy password hashing
+  feat(config): add environment variable parsing
+  Supports NODE_ENV for dev/prod toggles.
   ```
-
-### Examples
-
-```
-feat: add profile picture upload
-fix: resolve null pointer in data fetch
-docs: clarify API endpoint usage
-style: align code with prettier settings
-refactor: consolidate duplicate logic in utils
-perf: cache repeated database queries
-test: expand coverage for user auth
-build: upgrade to Node 18
-ci: add linting to PR checks
-chore: bump dependency versions
-```
-
-**Commit messages are critical infrastructure.** They drive versioning, changelogs, and clarity—treat them with precision and respect.
+- **Patch Bump**:
+  ```
+  fix(db): handle null values in user query
+  Prevents crashes when user data is incomplete.
+  ```
+- **Major Bump**:
+  ```
+  feat(api)!: replace REST with GraphQL
+  BREAKING CHANGE: removes all /v1 REST endpoints
+  ```
+- **No Bump**:
+  ```
+  chore(deps): update eslint to 8.0.0
+  No functional changes; aligns with team standards.
+  ```
