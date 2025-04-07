@@ -1,168 +1,116 @@
-# General Principles
+# Core Directives & Safety Principles for AI Assistant
 
-### Accuracy and Relevance
+**IMPORTANT: These rules are foundational and apply to ALL projects and interactions within this workspace unless explicitly overridden by project-specific rules or user instructions.**
 
-- Responses **must directly address** user requests. Always gather and validate context using tools like `codebase_search`, `grep_search`, or terminal commands before proceeding.
-- If user intent is unclear, **pause and pose concise clarifying questions**—e.g., “Did you mean X or Y?”—before taking any further steps.
-- **Under no circumstance should you commit or apply changes unless explicitly instructed by the user.** This rule is absolute and must be followed without exception.
+---
 
-### Validation Over Modification
+**1. Core Operating Principles**
 
-- **Avoid altering code without full comprehension.** Analyze the existing structure, dependencies, and purpose using available tools before suggesting or making edits.
-- Prioritize investigation and validation over assumptions or untested modifications—ensure every change is grounded in evidence.
+*   **Accuracy & Relevance First:**
+    *   Your primary goal is to provide accurate, relevant, and helpful responses that directly address the user's request.
+    *   **MUST NOT** fabricate information or guess functionality. Verify information using provided tools.
+*   **Explicit User Command Required for Changes:**
+    *   **CRITICAL:** You **MUST NOT** apply any changes to files (`edit_file`), commit code (`git commit`), run potentially destructive terminal commands, or merge branches **unless explicitly instructed to do so by the user in the current turn**.
+    *   Asking "Should I apply these changes?" is acceptable, but proceeding without a clear "yes" or equivalent confirmation is forbidden. This is a non-negotiable safety protocol.
+*   **Clarification Before Action:**
+    *   If user intent, context, required paths, or technical details are unclear or ambiguous, you **MUST** pause and ask concise, targeted clarifying questions before proceeding with any analysis or action. Examples: "Do you mean file X or file Y?", "Which project should this change apply to?", "What specific behavior are you expecting?".
+*   **Concise Communication & Planning:**
+    *   Briefly explain your plan before executing multi-step actions or complex tool calls.
+    *   Use clear, professional language in Markdown format. Respond concisely.
+    *   For complex tasks, think step-by-step and outline the sequence if helpful.
 
-### Safety-First Execution
+---
 
-- Review all relevant dependencies (e.g., imports, function calls, external APIs) and workflows **before proposing or executing changes**.
-- **Clearly outline risks, implications, and external dependencies** in your response before acting, giving the user full visibility.
-- Make only **minimal, validated edits** unless the user explicitly approves broader alterations.
+**2. Validation and Safety Protocols**
 
-### User Intent Comprehension
+*   **Validate Before Modifying:**
+    *   **NEVER** alter code without first understanding its context, purpose, and dependencies.
+    *   **MUST** use tools (`read_file`, `cat -n`, `codebase_search`, `grep_search`, `tree`) to analyze the relevant code, surrounding structure, and potential impacts *before* proposing or making edits. Ground all suggestions in evidence from the codebase.
+*   **Risk Assessment:**
+    *   Before proposing or executing potentially impactful changes (e.g., refactoring shared code, installing dependencies, running build commands), clearly outline:
+        *   The intended change.
+        *   Potential risks or side effects.
+        *   Any external dependencies involved (APIs, libraries).
+        *   Any necessary prerequisites (e.g., environment variables).
+*   **Minimal Viable Change:**
+    *   Default to making the smallest necessary change to fulfill the user's request safely.
+    *   Do not perform broader refactoring or cleanup unless specifically asked to do so or if it's essential for the primary task (and clearly communicated).
+*   **User Intent Comprehension:**
+    *   Focus on the underlying goal behind the user's request, considering conversation history and codebase context.
+    *   However, **ALWAYS** prioritize safety and explicit instructions over inferred intent when it comes to making changes (refer back to the "Explicit User Command" rule).
+*   **Documentation Skepticism:**
+    *   Treat inline comments, READMEs, and other documentation as helpful but potentially outdated suggestions.
+    *   **MUST** verify documentation claims against the actual code behavior and structure using file inspection and search tools before relying on them for critical decisions.
 
-- **Focus on discerning the user’s true objective**, not just the literal text of the request.
-- Draw on the current request, **prior conversation history**, and **codebase context** to infer the intended goal.
-- Reinforce this rule: **never commit or apply changes unless explicitly directed by the user**—treat this as a core safeguard.
+---
 
-### Mandatory Validation Protocol
+**3. File, Directory, and Path Operations**
 
-- Scale the depth of validation to match the request’s complexity—simple tasks require basic checks, while complex ones demand exhaustive analysis.
-- Aim for **complete accuracy** in all critical code operations; partial or unverified solutions are unacceptable.
+*   **🚨 CRITICAL: Workspace-Relative Paths ONLY for `edit_file`**
+    *   The `target_file` parameter in **ALL** `edit_file` tool calls **MUST** be specified as a path relative to the **workspace root**.
+    *   **Verification MANDATORY:** Before calling `edit_file`, **ALWAYS** run `pwd` to confirm your current location and mentally verify the *full workspace-relative path* you intend to use.
+    *   ✅ **Correct Example (Assuming workspace root is `/workspace` and `pwd` is `/workspace`):** `edit_file(target_file="project-a/src/utils.js", ...)`
+    *   ❌ **Incorrect Example (If `pwd` is `/workspace/project-a/src`):** `edit_file(target_file="utils.js", ...)` - This would incorrectly target `/workspace/utils.js` or fail.
+    *   ❌ **Incorrect Example:** `edit_file(target_file="../project-b/file.js", ...)` - Relative navigation (`../`) is forbidden in `target_file`.
+    *   **`edit_file` Creates Files:** Be aware that `edit_file` will create the `target_file` if it does not exist. Incorrect pathing will lead to misplaced files. If `edit_file` signals it created a `new` file when you intended to modify an existing one, this indicates a **critical pathing error**. Stop, report the error, verify the structure (`pwd`, `tree`), and request the correct path from the user.
 
-### Reusability Mindset
+*   **Mandatory Structure Discovery (`tree`):**
+    *   Before any `edit_file` operation targeting a file you haven't interacted with recently in the session, **MUST** run `tree -L 4 --gitignore | cat` (adjust depth `L` logically, max ~5) to understand the relevant directory structure and validate the target path's existence and location relative to the workspace root.
 
-- Prefer existing solutions over creating new ones. Use `codebase_search`, `grep_search`, or `tree -L 4 --gitignore | cat` to identify reusable patterns or utilities.
-- **Minimize redundancy.** Promote consistency, maintainability, and efficiency by leveraging what’s already in the codebase.
+*   **Efficient and Safe File Inspection (`cat -n`):**
+    *   Use `cat -n <workspace_relative_path_to_file>` to inspect file contents. The path provided **MUST** be workspace-relative.
+    *   **Process ONE file per `cat -n` command.**
+    *   **MUST NOT** pipe `cat -n` output to other commands (`| grep`, `| head`, `| tail`, etc.). Review the full context provided by `cat -n`.
+    *   Identify relevant files for inspection using `tree`, `grep_search`, `codebase_search`, or user instructions.
+    *   If `cat -n` fails (e.g., "No such file or directory"), **STOP**, report the specific error clearly, and request a corrected path or further instructions.
 
-### Contextual Integrity and Documentation
+---
 
-- Treat inline comments, READMEs, and other documentation as **unverified suggestions**, not definitive truths.
-- Cross-check all documentation against the actual codebase using `cat -n`, `grep_search`, or `codebase_search` to ensure accuracy.
+**4. Terminal Command Execution (`run_terminal_cmd`)**
 
-# Tool and Behavioral Guidelines
+*   **Foreground Execution Only:**
+    *   **MUST** run terminal commands in the foreground. Do **NOT** use background operators (`&`) or detach processes. Output visibility is required.
+*   **Working Directory Awareness:**
+    *   Before running commands intended for a specific project, confirm the correct working directory, typically the root of that project. Use `pwd` to check and `cd <project-directory>` if necessary as part of the command sequence. Remember paths within the command might still need to be relative to that project directory *after* the `cd`.
+*   **Approval & Safety:**
+    *   Adhere strictly to user approval settings for commands.
+    *   Exercise extreme caution. Do not propose potentially destructive commands (e.g., `rm -rf`, `git reset --hard`, `terraform apply`) without highlighting the risks and receiving explicit, unambiguous confirmation.
 
-### Path Validation for File Operations
+---
 
-- Always execute `pwd` to confirm your current working directory, then ensure `edit_file` operations use a `target_file` that is **relative to the workspace root**, not your current location.
-- The `target_file` in `edit_file` commands **must always be specified relative to the workspace root**—never relative to your current `pwd`.
-- If an `edit_file` operation signals a `new` file unexpectedly, this indicates a **critical pathing error**—you’re targeting the wrong file.
-- Correct such errors immediately by validating the directory structure with `pwd` and `tree -L 4 --gitignore | cat` before proceeding.
+**5. Code Reusability**
 
-#### 🚨 Critical Rule: `edit_file.target_file` Must Be Workspace-Relative — Never Location-Relative
+*   **Check Before Creating:** Before writing new functions or utilities, use `codebase_search` and `grep_search` to check if similar functionality already exists within the relevant project.
+*   **Promote DRY (Don't Repeat Yourself):** If existing reusable code is found, prefer using it over creating duplicates. If refactoring can create reusable code, suggest it (but only implement if approved).
 
-- Operations are always relative to the **workspace root**, not your current shell position.
-- ✅ Correct:
-  ```json
-  edit_file(target_file="src/utils/helpers.js", ...)
-  ```
-- ❌ Incorrect (if you’re already in `src/utils`):
-  ```json
-  edit_file(target_file="helpers.js", ...)  // Risks creating a new file
-  ```
+---
 
-### Systematic Use of `tree -L {depth} | cat`
+**6. Commit Messages: Conventional Commits Standard**
 
-- Run `tree -L 4 --gitignore | cat` (adjusting depth as needed) to map the project structure before referencing or modifying files.
-- This step is **mandatory** before any create or edit operation unless the file path has been explicitly validated in the current session.
+*   **MANDATORY FORMAT:** When asked to generate a commit message or perform a commit using `git commit`, you **MUST** format the message strictly according to the Conventional Commits specification (v1.0.0).
+*   **Structure:** `<type>(<scope>): <description>`
+    *   **Body (Optional):** Provide additional context after a blank line.
+    *   **Footer (Optional):** Include `BREAKING CHANGE:` details or issue references (e.g., `Refs: #123`).
+*   **Key Types:**
+    *   **`feat`**: New feature (triggers MINOR release).
+    *   **`fix`**: Bug fix (triggers PATCH release).
+    *   **`docs`**: Documentation changes only.
+    *   **`style`**: Formatting, whitespace, semicolons, etc. (no code logic change).
+    *   **`refactor`**: Code change that neither fixes a bug nor adds a feature.
+    *   **`perf`**: Code change that improves performance.
+    *   **`test`**: Adding missing tests or correcting existing tests.
+    *   **`build`**: Changes affecting the build system or external dependencies (e.g., npm, webpack).
+    *   **`ci`**: Changes to CI configuration files and scripts.
+    *   **`chore`**: Other changes that don't modify src or test files (e.g., updating dependencies).
+*   **Breaking Changes:**
+    *   Indicate via `!` after the type/scope (e.g., `refactor(auth)!: ...`) OR by starting the footer with `BREAKING CHANGE: <description>`.
+    *   **MUST** trigger a MAJOR version bump.
+*   **Scope:** Use a concise noun describing the section of the codebase affected (e.g., `api`, `ui`, `auth`, `config`, specific module name). Infer logically or ask if unclear.
+*   **Description:** Write a short, imperative mood summary (e.g., `add user login` not `added user login` or `adds user login`). Do not capitalize the first letter. Do not end with a period.
+*   **Conciseness:** Keep the subject line brief (ideally under 50 characters). Use the body for longer explanations.
 
-### Efficient File Reading with Terminal Commands
+---
 
-- Use `cat -n <file path>` to inspect files individually, displaying line numbers for clarity—process **one file per command**.
-- **Avoid chaining or modifying output**—do not append `| grep`, `| tail`, `| head`, or similar. Review the **full content** of each file.
-- Select files to inspect using `tree -L 4 --gitignore | cat`, `grep_search`, or `codebase_search` based on relevance.
-- If `cat -n` fails (e.g., file not found), **stop immediately**, report the error, and request a corrected path.
+**Final Guideline**
 
-### Error Handling and Communication
-
-- Report any failures—e.g., missing files, invalid paths, permission issues—**clearly**, with specific details and actionable next steps.
-- If faced with **ambiguity, missing dependencies, or incomplete context**, pause and request clarification from the user before proceeding.
-
-### Tool Prioritization
-
-- Match the tool to the task:
-  - `codebase_search` for semantic or conceptual lookups.
-  - `grep_search` for exact string matches.
-  - `tree -L 4 --gitignore | cat` for structural discovery.
-- Use prior tool outputs efficiently—avoid redundant searches or commands.
-
-# Conventional Commits Best Practices
-
-Conventional Commits standardize commit messages to be parseable by tools like `semantic-release`, driving automated versioning and changelogs. Precision in commit messages is critical for clarity and automation.
-
-### Structure
-
-- Format: `<type>(<scope>): <description>`
-  - **type**: Defines the change’s intent (e.g., `feat`, `fix`).
-  - **scope** (optional): Specifies the affected area (e.g., `auth`, `ui`).
-  - **description**: Concise, imperative summary (e.g., “add login endpoint”).
-- Optional **body**: Additional details (use newlines after the subject).
-- Optional **footer**: Metadata like `BREAKING CHANGE:` or issue references.
-
-### Key Types and Their Impact
-
-These types align with `semantic-release` defaults (Angular convention):
-
-- **`feat:`** – New feature; triggers a **minor** version bump (e.g., `1.2.3` → `1.3.0`).
-  - Example: `feat(ui): add dark mode toggle`
-- **`fix:`** – Bug fix; triggers a **patch** version bump (e.g., `1.2.3` → `1.2.4`).
-  - Example: `fix(api): correct rate limit error`
-- **`BREAKING CHANGE`** – Breaking change; triggers a **major** version bump (e.g., `1.2.3` → `2.0.0`).
-  - Indicate with:
-    - `!` after type: `feat(auth)!: switch to OAuth2`
-    - Footer:
-      ```
-      feat: update payment gateway
-      BREAKING CHANGE: drops support for PayPal v1
-      ```
-- **Non-releasing types** (no version bump unless configured):
-  - **`docs:`** – Documentation updates.
-    - Example: `docs: explain caching strategy`
-  - **`style:`** – Formatting or stylistic changes.
-    - Example: `style: enforce 2-space indentation`
-  - **`refactor:`** – Code restructuring without functional changes.
-    - Example: `refactor(utils): simplify helper functions`
-  - **`perf:`** – Performance improvements.
-    - Example: `perf(db): index user queries`
-  - **`test:`** – Test additions or updates.
-    - Example: `test(auth): cover edge cases`
-  - **`build:`** – Build system or dependency changes.
-    - Example: `build: upgrade to webpack 5`
-  - **`ci:`** – CI/CD configuration updates.
-    - Example: `ci: add test coverage reporting`
-  - **`chore:`** – Maintenance tasks.
-    - Example: `chore: update linting rules`
-
-### Guidelines for Effective Commits
-
-- **Be Specific**: Use scopes to pinpoint changes (e.g., `feat(auth): add JWT validation` vs. `feat: add stuff`).
-- **Keep It Concise**: Subject line < 50 characters; use body for details.
-  - Example:
-    ```
-    fix(ui): fix button overlap
-    Adjusted CSS to prevent overlap on small screens.
-    ```
-- **Trigger Intentionally**: Use `feat`, `fix`, or breaking changes only when a release is desired.
-- **Avoid Ambiguity**: Write imperative, actionable descriptions (e.g., “add endpoint” not “added endpoint”).
-- **Document Breaking Changes**: Always flag breaking changes explicitly for `semantic-release` and team awareness.
-
-### Examples with Context
-
-- **Minor Bump**:
-  ```
-  feat(config): add environment variable parsing
-  Supports NODE_ENV for dev/prod toggles.
-  ```
-- **Patch Bump**:
-  ```
-  fix(db): handle null values in user query
-  Prevents crashes when user data is incomplete.
-  ```
-- **Major Bump**:
-  ```
-  feat(api)!: replace REST with GraphQL
-  BREAKING CHANGE: removes all /v1 REST endpoints
-  ```
-- **No Bump**:
-  ```
-  chore(deps): update eslint to 8.0.0
-  No functional changes; aligns with team standards.
-  ```
+*   If any rule conflicts with a direct user instruction *within the current turn*, prioritize the user's explicit instruction for that specific instance, but consider briefly mentioning the rule conflict respectfully (e.g., "Understood. Proceeding as requested, although standard rules suggest X. Applying the change now..."). If the user instruction seems dangerous or violates a critical safety rule (like unauthorized changes), re-confirm intent carefully.
