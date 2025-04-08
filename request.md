@@ -1,37 +1,39 @@
-{my request (e.g., "add a save button")}
+my query:
+
+{my request (e.g., "Add a button to clear the conversation", "Refactor the MessageItem component to use a new prop")}
 
 ---
 
-Design and implement the request described above using a systematic, validation-driven approach:
+**AI Task: Implement the Request Proactively and Safely**
 
-1. **Map System Context**:
-   - Explore the codebase structure with `tree -L 4 --gitignore | cat` to locate where the feature belongs.
-   - Identify relevant patterns, conventions, or domain models using `codebase_search` to ensure seamless integration.
-   - Pinpoint integration points—e.g., UI components, data layers, or APIs—affected by the request.
+Follow these steps **rigorously**, adhering to all rules in `core.md`. Prioritize understanding the goal, validating context, considering alternatives, proposing clearly, and ensuring quality through verification.
 
-2. **Specify Requirements**:
-   - Break the request into clear, testable criteria—e.g., “Button triggers save, shows success state.”
-   - Define use cases (normal and edge) and constraints (e.g., performance, UI consistency).
-   - Set scope boundaries to keep the implementation focused and maintainable.
+1.  **Clarify Intent & Validate Context (MANDATORY):**
+    *   **a. Understand Goal:** Re-state your understanding of the core objective of `{my request}`. If ambiguous, **STOP and ask clarifying questions** immediately.
+    *   **b. Identify Target Project & Scope:** Determine which project (`api-brainybuddy`, `web-brainybuddy`, or potentially both) is affected. State the target project(s).
+    *   **c. Validate Environment & Structure:** Execute `pwd` to confirm CWD. Execute `tree -L 3 --gitignore | cat` (or `ls -laR`) focused on the likely affected project/directory.
+    *   **d. Verify Existing Files/Code:** If `{my request}` involves modifying existing code, use `cat -n <workspace-relative-path>` or `read_file` to examine the relevant current code and confirm your understanding of its logic and structure. Verify existence before proceeding. If files are not found, **STOP** and report.
 
-3. **Leverage Reusability**:
-   - Search for existing components or utilities with `codebase_search` that can be adapted—e.g., a “button” component or “save” function.
-   - Use `grep_search` to confirm similar implementations, ensuring consistency with project standards.
-   - Evaluate if the feature could be abstracted for future reuse, noting potential opportunities.
+2.  **Pre-computation Analysis & Design Thinking (MANDATORY):**
+    *   **a. Impact Analysis:** Identify all potentially affected files, components, hooks, services, types, and API endpoints within the target project(s). Consider potential side effects (e.g., on state management, persistence, UI layout).
+    *   **b. UI Visualization (if applicable for `web-brainybuddy`):** Briefly describe the expected visual outcome or changes. Ensure alignment with existing styles (Tailwind, `cn` utility).
+    *   **c. Reusability & Type Check:** **Actively search** (`codebase_search`, `grep_search`) for existing components, hooks, utilities, and types that could be reused. **Prioritize reuse.** Justify creating new entities only if existing ones are unsuitable. Check `src/types/` first for types.
+    *   **d. Consider Alternatives & Enhancements:** Think beyond the literal request. Are there more performant, maintainable, or robust ways to achieve the goal? Could this be an opportunity to apply a better pattern or refactor slightly for long-term benefit?
 
-4. **Plan Targeted Changes**:
-   - List all files requiring edits (relative to workspace root), dependencies to update, and new files if needed.
-   - Assess impacts on cross-cutting concerns—e.g., error handling, logging, or state management.
-   - Balance immediate needs with long-term code health, planning minimal yet effective changes.
+3.  **Outline Plan & Propose Solution(s) (MANDATORY Confirmation Required):**
+    *   **a. Outline Plan:** Briefly describe the steps you will take, including which files will be created or modified (using full workspace-relative paths).
+    *   **b. Propose Implementation:** Detail the specific `edit_file` operations (including code snippets).
+    *   **c. Include Proactive Suggestions (If Any):** If step 2.d identified better alternatives or enhancements, present them clearly alongside the direct implementation proposal. Explain the trade-offs or benefits (e.g., "Proposal 1: Direct implementation as requested. Proposal 2: Implement using a new reusable hook `useClearConversation`, which would be slightly more code now but better for future features. Which approach do you prefer?").
+    *   **d. State Risks/Preconditions:** Clearly mention any dependencies, potential risks, or necessary setup.
+    *   **e. Request Confirmation:** **CRITICAL:** Explicitly ask the user to confirm *which* proposal (if multiple) they want to proceed with and to give permission to execute the proposed `edit_file` command(s) (e.g., "Please confirm if I should proceed with Proposal 1 by applying the `edit_file` changes?").
 
-5. **Implement with Precision**:
-   - Provide a step-by-step plan with specific code changes—include file paths, line numbers, and snippets.
-   - Adhere to project conventions (e.g., naming, structure) and reuse existing patterns where applicable.
-   - Highlight enhancements to organization or clarity—e.g., “Extract logic to a helper function.”
+4.  **Implement (If Confirmed by User):**
+    *   Execute the confirmed `edit_file` operations precisely as proposed. Report success or any errors immediately.
 
-6. **Validate and Stabilize**:
-   - Define test scenarios—e.g., “Save with valid data,” “Save with no input”—to confirm functionality.
-   - Suggest validation methods: unit tests, UI checks, or logs, tailored to the project’s practices.
-   - Recommend a stability check—e.g., “Monitor save API calls”—with rollback steps if issues arise.
+5.  **Propose Verification Steps (MANDATORY after successful `edit_file`):**
+    *   **a. Linting/Formatting/Building:** Propose running the standard verification commands (`format`, `lint`, `build`, `curl` test if applicable for API changes) for the affected project(s) as defined in `core.md` Section 6. State that confirmation is required before running these state-altering commands (per `core.md` Section 1.2.b).
+    *   **b. Functional Verification (Suggest):** Recommend specific manual checks or testing steps the user should perform to confirm the feature/modification works as expected and hasn't introduced regressions (e.g., "Verify the 'Clear' button appears and removes messages from the UI and IndexedDB").
 
-This process delivers a well-integrated, reliable solution that enhances the codebase while meeting the request’s goals.
+---
+
+**Goal:** Fulfill `{my request}` safely, efficiently, and with high quality, leveraging existing patterns, suggesting improvements where appropriate, and ensuring rigorous validation throughout the process, guided strictly by `core.md`.
