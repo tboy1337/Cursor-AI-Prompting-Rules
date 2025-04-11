@@ -34,11 +34,11 @@ The rules in `core.md` need to be loaded by Cursor AI so they apply to all your 
 
 1.  Open the Command Palette in Cursor AI: `Cmd + Shift + P` (macOS) or `Ctrl + Shift + P` (Windows/Linux).
 2.  Type `Cursor Settings: Configure User Rules` and select it.
-3.  This will open your global `rules.json` or a similar configuration interface.
+3.  This will open your global rules configuration interface.
 4.  Copy the **entire content** of the `core.md` file.
-5.  Paste the copied content into the User Rules configuration area. (Ensure the format is appropriate for the settings file, which might require slight adjustments if it expects JSON, though often raw text works for the primary rule definition).
+5.  Paste the copied content into the User Rules configuration area.
 6.  Save the settings.
-    *   *Note:* These rules will now apply globally to all your projects opened in Cursor, unless overridden by a project-specific `.cursorrules` file.
+    - _Note:_ These rules will now apply globally to all your projects opened in Cursor, unless overridden by a project-specific `.cursorrules` file.
 
 ### 2. Using `refresh.md` (When Something is Still Broken)
 
