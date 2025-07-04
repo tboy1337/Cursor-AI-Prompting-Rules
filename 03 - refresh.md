@@ -1,21 +1,96 @@
-User Query: {replace this with a specific and concise description of the problem you are still facing}
+
+{Concise description of the persistent issue here}
 
 ---
 
-Based on the persistent user query detailed above the `---` separator, a previous attempt likely failed to resolve the issue. **Discard previous assumptions about the root cause.** We must now perform a **systematic re-diagnosis** by following these steps, adhering strictly to your core operating principles (`core.md`/`.cursorrules`/User Rules):
+## 0 · Familiarisation & Mapping
 
-1.  **Step Back & Re-Scope:** Forget the specifics of the last failed attempt. Broaden your focus. Identify the _core functionality_ or _system component(s)_ involved in the user's reported problem (e.g., authentication flow, data processing pipeline, specific UI component interaction, infrastructure resource provisioning).
-2.  **Map the Relevant System Structure:** Use tools (`list_dir`, `file_search`, `codebase_search`, `read_file` on config/entry points) to **map out the high-level structure and key interaction points** of the identified component(s). Understand how data flows, where configurations are loaded, and what dependencies exist (internal and external). Gain a "pyramid view" – see the overall architecture first.
-3.  **Hypothesize Potential Root Causes (Broadly):** Based on the system map and the problem description, generate a _broad_ list of potential areas where the root cause might lie (e.g., configuration error, incorrect API call, upstream data issue, logic flaw in module X, dependency conflict, infrastructure misconfiguration, incorrect permissions).
-4.  **Systematic Investigation & Evidence Gathering:** **Prioritize and investigate** the most likely hypotheses from step 3 using targeted tool usage.
-    - **Validate Configurations:** Use `read_file` to check _all_ relevant configuration files associated with the affected component(s).
-    - **Trace Execution Flow:** Use `grep_search` or `codebase_search` to trace the execution path related to the failing functionality. Add temporary, descriptive logging via `edit_file` if necessary and safe (request approval if unsure/risky) to pinpoint failure points.
-    - **Check Dependencies & External Interactions:** Verify versions and statuses of dependencies. If external systems are involved, use safe commands (`run_terminal_cmd` with `require_user_approval=true` if needed for diagnostics like `curl` or status checks) to assess their state.
-    - **Examine Logs:** If logs are accessible and relevant, guide me on how to retrieve them or use tools (`read_file` if they are simple files) to analyze recent entries related to the failure.
-5.  **Identify the Confirmed Root Cause:** Based _only_ on the evidence gathered through tool-based investigation, pinpoint the **specific, confirmed root cause**. Do not guess. If investigation is inconclusive, report findings and suggest the next most logical diagnostic step.
-6.  **Propose a Targeted Solution:** Once the root cause is _confirmed_, propose a precise fix that directly addresses it. Explain _why_ this fix targets the identified root cause.
-7.  **Plan Comprehensive Verification:** Outline how you will verify that the proposed fix _resolves the original issue_ AND _does not introduce regressions_. This verification must cover the relevant positive, negative, and edge cases as applicable to the fixed component.
-8.  **Execute & Verify:** Implement the fix (using `edit_file` or `run_terminal_cmd` with appropriate safety approvals) and **execute the comprehensive verification plan**.
-9.  **Report Outcome:** Succinctly report the identified root cause, the fix applied, and the results of your comprehensive verification, confirming the issue is resolved.
+- **Reconnaissance first.** Conduct a non-destructive survey of the repository, runtime substrate, configs, logs, and test suites to build an objective mental model of the current state.
+- Produce a ≤ 200-line digest anchoring all subsequent analysis. **No mutations during this phase.**
 
-**Proceed methodically through these diagnostic steps.** Do not jump to proposing a fix until the root cause is confidently identified through investigation.
+---
+
+## 1 · Problem Framing & Success Criteria
+
+- Restate the observed behaviour, expected behaviour, and impact.
+- Define concrete success criteria (e.g., failing test passes, latency < X ms).
+- Invoke the clarification threshold only if epistemic conflict, missing resources, irreversible jeopardy, or research saturation arises.
+
+---
+
+## 2 · Context Gathering
+
+- Enumerate artefacts—source, configs, infra, tests, logs, dashboards—relevant to the failing pathway.
+- Apply the token-aware filtering protocol (`head`, `wc -l`, `head -c`) to sample large outputs responsibly.
+- Document scope: systems, services, data flows, security surfaces.
+
+---
+
+## 3 · Hypothesis Generation & Impact Assessment
+
+- Brainstorm plausible root causes (config drift, regression, dependency mismatch, race condition, resource limits, etc.).
+- Rank by likelihood × blast radius.
+- Note instrumentation or log gaps that may impede verification.
+
+---
+
+## 4 · Targeted Investigation & Diagnosis
+
+- Probe highest-priority hypotheses first using safe, time-bounded commands.
+- Capture fused stdout+stderr and exit codes for every diagnostic step.
+- Eliminate or confirm hypotheses with concrete evidence.
+
+---
+
+## 5 · Root-Cause Confirmation & Fix Strategy
+
+- Summarise the definitive root cause.
+- Devise a minimal, reversible fix that addresses the underlying issue—not a surface symptom.
+- Consider test coverage: add/expand failing cases to prevent regressions.
+
+---
+
+## 6 · Execution & Autonomous Correction
+
+- **Read before write; reread after write.**
+- **Command-wrapper mandate:**
+
+  ```bash
+  timeout 30s <command> 2>&1 | cat
+  ```
+
+  Non-executed illustrative snippets may omit the wrapper if prefixed `# illustrative only`.
+
+- Use non-interactive flags (`-y`, `--yes`, `--force`) when safe; export `DEBIAN_FRONTEND=noninteractive`.
+- Preserve chronometric coherence (`TZ='Asia/Jakarta'`) and fail-fast semantics (`set -o errexit -o pipefail`).
+- When documentation housekeeping is warranted, you may delete or rename obsolete files provided the action is reversible via version control and the rationale is reported in-chat.
+- **Never create unsolicited `.md` files**—all transient analysis stays in chat unless an artefact is explicitly requested.
+
+---
+
+## 7 · Verification & Regression Guard
+
+- Re-run the failing test, full unit/integration suites, linters, and static analysis.
+- Auto-rectify new failures until green or blocked by the clarification threshold.
+- Capture and report key metrics (latency, error rates) to demonstrate resolution.
+
+---
+
+## 8 · Reporting & Live TODO
+
+- Summarise:
+
+  - **Root Cause** — definitive fault and evidence
+  - **Fix Applied** — code, config, infra changes
+  - **Verification** — tests run and outcomes
+  - **Residual Risks / Recommendations**
+
+- Maintain an inline TODO ledger with ✅ / ⚠️ / 🚧 markers if multi-phase follow-ups remain.
+- All transient narratives remain in chat; no unsolicited Markdown reports.
+
+---
+
+## 9 · Continuous Improvement & Prospection
+
+- Suggest durable enhancements (observability, resilience, performance, security) that would pre-empt similar failures.
+- Provide impact estimates and outline next steps.
