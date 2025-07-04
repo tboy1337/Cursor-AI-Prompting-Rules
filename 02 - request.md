@@ -1,12 +1,82 @@
-User Request: {replace this with your specific feature request or modification task}
+
+{Your feature / change request here}
 
 ---
 
-Based on the user request detailed above the `---` separator, proceed with the implementation. You MUST rigorously follow your core operating principles (`core.md`/`.cursorrules`/User Rules), paying specific attention to the following for **this particular request**:
+## 0 · Familiarisation & Mapping
 
-1.  **Deep Analysis & Research:** Fully grasp the user's intent and desired outcome. Accurately locate _all_ relevant system components (code, config, infrastructure, documentation) using tools. Thoroughly investigate the existing state, patterns, and context at these locations _before_ planning changes.
-2.  **Impact, Dependency & Reuse Assessment:** Proactively analyze dependencies and potential ripple effects across the entire system. Use tools to confirm impacts. Actively search for and prioritize code reuse and ensure consistency with established project conventions.
-3.  **Optimal Strategy & Autonomous Ambiguity Resolution:** Identify the optimal implementation strategy, considering alternatives for maintainability, performance, robustness, and architectural fit. **Crucially, resolve any ambiguities** in the request or discovered context by **autonomously investigating the codebase/configuration with tools first.** Do _not_ default to asking for clarification; seek the answers independently. Document key findings that resolved ambiguity.
-4.  **Comprehensive Validation Mandate:** Before considering the task complete, perform **thorough, comprehensive validation and testing**. This MUST proactively cover positive cases, negative inputs/scenarios, edge cases, error handling, boundary conditions, and integration points relevant to the changes made. Define and execute this comprehensive test scope using appropriate tools (`run_terminal_cmd`, code analysis, etc.).
-5.  **Safe & Verified Execution:** Implement the changes based on your thorough research and verified plan. Use tool-based approval mechanisms (e.g., `require_user_approval=true` for high-risk `run_terminal_cmd`) for any operations identified as potentially high-risk during your analysis. Do not proceed with high-risk actions without explicit tool-gated approval.
-6.  **Concise & Informative Reporting:** Upon completion, provide a succinct summary. Detail the implemented changes, highlight key findings from your research and ambiguity resolution (e.g., "Confirmed service runs on ECS via config file," "Reused existing validation function"), explain significant design choices, and importantly, report the **scope and outcome** of your comprehensive validation/testing. Your communication should facilitate quick understanding and minimal necessary follow-up interaction.
+- **Reconnaissance first.** Perform a non-destructive scan of the repository, dependencies, configuration, and runtime substrate to build an evidence-based mental model.
+- Produce a brief, ≤ 200-line digest anchoring subsequent decisions.
+- **No mutations during this phase.**
+
+---
+
+## 1 · Planning & Clarification
+
+- Restate objectives, success criteria, and constraints.
+- Identify potential side-effects, external dependencies, and test coverage gaps.
+- Invoke the clarification threshold only if epistemic conflict, missing resources, irreversible jeopardy, or research saturation arises.
+
+---
+
+## 2 · Context Gathering
+
+- Enumerate all artefacts—source, configs, infra manifests, tests, logs—impacted by the request.
+- Use the token-aware filtering protocol (head, wc -l, head -c) to responsibly sample large outputs.
+- Document scope: modules, services, data flows, and security surfaces.
+
+---
+
+## 3 · Strategy & Core-First Design
+
+- Brainstorm alternatives; justify the chosen path on reliability, maintainability, and alignment with existing patterns.
+- Leverage reusable abstractions and adhere to DRY principles.
+- Sequence work so that foundational behaviour lands before peripheral optimisation or polish.
+
+---
+
+## 4 · Execution & Implementation
+
+- **Read before write; reread after write.**
+- **Command-wrapper mandate:**
+
+  ```bash
+  timeout 30s <command> 2>&1 | cat
+  ```
+
+  Non-executed illustrative snippets may omit the wrapper if prefixed with `# illustrative only`.
+
+- Use non-interactive flags (`-y`, `--yes`, `--force`) when safe; export `DEBIAN_FRONTEND=noninteractive`.
+- Respect chronometric coherence (`TZ='Asia/Jakarta'`) and fail-fast semantics (`set -o errexit -o pipefail`).
+- When housekeeping documentation, you may delete or rename obsolete files as long as the action is reversible via version control and the rationale is reported in-chat.
+- **Never create unsolicited `.md` files**—summaries and scratch notes stay in chat unless the user explicitly requests the artefact.
+
+---
+
+## 5 · Validation & Autonomous Correction
+
+- Run unit, integration, linter, and static-analysis suites; auto-rectify failures until green or blocked by the clarification threshold.
+- Capture fused stdout + stderr and exit codes for every CLI/API invocation.
+- After fixes, reread modified artefacts to confirm semantic and syntactic integrity.
+
+---
+
+## 6 · Reporting & Live TODO
+
+- Summarise:
+
+  - **Changes Applied** — code, configs, docs touched
+  - **Testing Performed** — suites run and outcomes
+  - **Key Decisions** — trade-offs and rationale
+  - **Risks & Recommendations** — residual concerns
+
+- Maintain an inline TODO ledger using ✅ / ⚠️ / 🚧 markers for multi-phase work.
+- All transient narratives remain in chat; no unsolicited Markdown reports.
+
+---
+
+## 7 · Continuous Improvement & Prospection
+
+- Suggest high-value, non-critical enhancements (performance, security, observability).
+- Provide impact estimates and outline next steps.
+
