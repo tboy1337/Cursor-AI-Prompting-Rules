@@ -1,72 +1,95 @@
-# Cursor AI Prompting Framework Usage Guide
+# Cursor AI Prompting Framework — Usage Guide
 
-This guide explains how to use the structured prompting files (`core.md`, `refresh.md`, `request.md`) to optimize your interactions with Cursor AI, leading to more reliable, safe, and effective coding assistance.
+_A disciplined, evidence-first workflow for autonomous code agents_
 
-## Core Components
+---
 
-1.  **`core.md` (Foundational Rules)**
+## 1 · Install the Operational Doctrine
 
-    - **Purpose:** Establishes the fundamental operating principles, safety protocols, tool usage guidelines, and validation requirements for Cursor AI. It ensures consistent and cautious behavior across all interactions.
-    - **Usage:** This file's content should be **persistently active** during your Cursor sessions.
+The **Cursor Operational Doctrine** (file **`core.md`**) encodes the agent’s always-on principles—reconnaissance before action, empirical validation over conjecture, strict command-execution hygiene, and zero-assumption stewardship.
 
-2.  **`refresh.md` (Diagnose & Resolve Persistent Issues)**
+Choose **one** installation mode:
 
-    - **Purpose:** A specialized prompt template used when a previous attempt to fix a bug or issue failed, or when a problem is recurring. It guides the AI through a rigorous diagnostic and resolution process.
-    - **Usage:** Used **situationally** by pasting its modified content into the Cursor AI chat.
+| Mode                      | Steps                                                                                                                                                                                                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Project-specific**      | 1. In your repo root, create `.cursorrules`.<br>2. Copy the entire contents of **`core.md`** into that file.<br>3. Commit & push.                                                                                                                                                            |
+| **Global (all projects)** | 1. Open Cursor → _Command Palette_ (`Ctrl + Shift + P` / `Cmd + Shift + P`).<br>2. Select **“Cursor Settings → Configure User Rules”**.<br>3. Paste **`core.md`** in its entirety.<br>4. Save. The doctrine now applies across every workspace (unless a local `.cursorrules` overrides it). |
 
-3.  **`request.md` (Implement Features/Modifications)**
-    - **Purpose:** A specialized prompt template used when asking the AI to implement a new feature, refactor code, or make specific modifications. It guides the AI through planning, validation, implementation, and verification steps.
-    - **Usage:** Used **situationally** by pasting its modified content into the Cursor AI chat.
+> **Never edit rule files piecemeal.** Replace their full contents to avoid drift.
 
-## How to Use
+---
 
-### 1. Setting Up `core.md` (Persistent Rules)
+## 2 · Operational Playbooks
 
-The rules in `core.md` need to be loaded by Cursor AI so they apply to all your interactions. You have two main options:
+Four structured templates drive repeatable, autonomous sessions. Copy the full text of a template, replace its first placeholder line, then paste it into chat.
 
-**Option A: `.cursorrules` File (Recommended for Project-Specific Rules)**
+| Template         | When to Use                                                                 | First Line Placeholder                               |
+| ---------------- | --------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **`request.md`** | Build a feature, refactor code, or make a targeted change.                  | `{Your feature / change request here}`               |
+| **`refresh.md`** | A bug persists after earlier attempts—launch a root-cause analysis and fix. | `{Concise description of the persistent issue here}` |
+| **`retro.md`**   | Conclude a work session; harvest lessons and update rule files.             | _(No placeholder—use as is at session end)_          |
 
-1.  Create a file named `.cursorrules` in the **root directory** of your workspace/project.
-2.  Copy the **entire content** of the `core.md` file.
-3.  Paste the copied content into the `.cursorrules` file.
-4.  Save the `.cursorrules` file.
-    - _Note:_ Cursor will automatically detect and use these rules for interactions within this specific workspace. Project rules typically override global User Rules.
+Each template embeds the doctrine’s safeguards:
 
-**Option B: User Rules Setting (Global Rules)**
+- **Familiarisation & Mapping** step (non-destructive reconnaissance).
+- Command-wrapper mandate (`timeout 30s <command> 2>&1 | cat`).
+- Ban on unsolicited Markdown files—transient narratives stay in-chat.
 
-1.  Open the Command Palette in Cursor AI: `Cmd + Shift + P` (macOS) or `Ctrl + Shift + P` (Windows/Linux).
-2.  Type `Cursor Settings: Configure User Rules` and select it.
-3.  This will open your global rules configuration interface.
-4.  Copy the **entire content** of the `core.md` file.
-5.  Paste the copied content into the User Rules configuration area.
-6.  Save the settings.
-    - _Note:_ These rules will now apply globally to all your projects opened in Cursor, unless overridden by a project-specific `.cursorrules` file.
+---
 
-### 2. Using `refresh.md` (When Something is Still Broken)
+## 3 · Flow of a Typical Session
 
-Use this template when you need the AI to re-diagnose and fix an issue that wasn't resolved previously.
+1. **Paste a template** with the placeholder filled.
+2. Cursor AI:
 
-1.  **Copy:** Select and copy the **entire content** of the `refresh.md` file.
-2.  **Modify:** Locate the first line: `User Query: {my query}`.
-3.  **Replace Placeholder:** Replace the placeholder `{my query}` with a _specific and concise description_ of the problem you are still facing.
-    - _Example:_ `User Query: the login API call still returns a 403 error after applying the header changes`
-4.  **Paste:** Paste the **entire modified content** (with your specific query) directly into the Cursor AI chat input field and send it.
+   1. Performs reconnaissance and produces a ≤ 200-line digest.
+   2. Plans, gathers context, and executes changes incrementally.
+   3. Runs tests/linters; auto-rectifies failures.
+   4. Reports with ✅ / ⚠️ / 🚧 markers and an inline TODO, no stray files.
 
-### 3. Using `request.md` (For New Features or Changes)
+3. **Review the summary**; iterate or request a **`retro.md`** to fold lessons back into the doctrine.
 
-Use this template when you want the AI to implement a new feature, refactor existing code, or perform a specific modification task.
+---
 
-1.  **Copy:** Select and copy the **entire content** of the `request.md` file.
-2.  **Modify:** Locate the first line: `User Request: {my request}`.
-3.  **Replace Placeholder:** Replace the placeholder `{my request}` with a _clear and specific description_ of the task you want the AI to perform.
-    - _Example:_ `User Request: Add a confirmation modal before deleting an item from the list`
-    - _Example:_ `User Request: Refactor the data fetching logic in `UserProfile.js`to use the new`useQuery` hook`
-4.  **Paste:** Paste the **entire modified content** (with your specific request) directly into the Cursor AI chat input field and send it.
+## 4 · Best-Practice Check-list
 
-## Best Practices
+- **Be specific** in the placeholder line—state _what_ and _why_.
+- **One template per prompt.** Never mix `refresh.md` and `request.md`.
+- **Trust autonomy.** The agent self-validates; intervene only when it escalates under the clarification threshold.
+- **Inspect reports, not logs.** Rule files remain terse; rich diagnostics appear in-chat.
+- **End with a retro.** Use `retro.md` to keep the rule set evergreen.
 
-- **Accurate Placeholders:** Ensure you replace `{my query}` and `{my request}` accurately and specifically in the `refresh.md` and `request.md` templates before pasting them.
-- **Foundation:** Remember that the rules defined in `core.md` (via `.cursorrules` or User Settings) underpin _all_ interactions, including those initiated using the `refresh.md` and `request.md` templates.
-- **Understand the Rules:** Familiarize yourself with the principles in `core.md` to better understand how the AI is expected to behave and why it might ask for confirmation or perform certain validation steps.
+---
 
-By using these structured prompts, you can guide Cursor AI more effectively, leading to more predictable, safe, and productive development sessions.
+## 5 · Guarantees & Guard-rails
+
+| Guard-rail                  | Enforcement                                                                                                         |        |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------ |
+| **Reconnaissance first**    | The agent may not mutate artefacts before completing the Familiarisation & Mapping phase.                           |        |
+| **Exact command wrapper**   | All executed shell commands include \`timeout 30s … 2>&1                                                            | cat\`. |
+| **No unsolicited Markdown** | Summaries, scratch notes, and logs remain in-chat unless the user explicitly names the file.                        |        |
+| **Safe deletions**          | Obsolete files may be removed autonomously only if reversible via version control and justified in-chat.            |        |
+| **Clarification threshold** | The agent asks questions only for epistemic conflict, missing resources, irreversible risk, or research saturation. |        |
+
+---
+
+## 6 · Quick-Start Example
+
+> “Add an endpoint that returns build metadata (commit hash, build time). Use Go, update tests, and document the new route.”
+
+1. Copy **`request.md`**.
+2. Replace the first line with the sentence above.
+3. Paste into chat.
+4. Observe Cursor AI:
+
+   - inventories the repo,
+   - designs the endpoint,
+   - modifies code & tests,
+   - runs `go test`, linters, CI scripts,
+   - reports results with ✅ markers—no stray files created.
+
+Once satisfied, paste **`retro.md`** to record lessons and refine the rule set.
+
+---
+
+**By following this framework, you empower Cursor AI to act as a disciplined, autonomous senior engineer—planning deeply, executing safely, self-validating, and continuously improving its own operating manual.**
