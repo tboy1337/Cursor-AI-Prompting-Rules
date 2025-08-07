@@ -92,4 +92,4 @@ Once satisfied, paste **`retro.md`** to record lessons and refine the rule set.
 
 ---
 
-**By following this framework, you empower Cursor AI to act as a disciplined, autonomous senior engineer—planning deeply, executing safely, self-validating, and continuously improving its own operating manual.** 
+**By following this framework, you empower Cursor AI to act as a disciplined, autonomous senior engineer—planning deeply, executing safely, self-validating, and continuously improving its own operating manual.**
