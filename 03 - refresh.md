@@ -1,96 +1,85 @@
-
-{Concise description of the persistent issue here}
-
----
-
-## 0 · Familiarisation & Mapping
-
-- **Reconnaissance first.** Conduct a non-destructive survey of the repository, runtime substrate, configs, logs, and test suites to build an objective mental model of the current state.
-- Produce a ≤ 200-line digest anchoring all subsequent analysis. **No mutations during this phase.**
+{A concise but complete description of the persistent bug or issue. Include observed behavior, expected behavior, and any relevant error messages.}
 
 ---
 
-## 1 · Problem Framing & Success Criteria
+## **Mission Briefing: Root Cause Analysis & Remediation Protocol**
 
-- Restate the observed behaviour, expected behaviour, and impact.
-- Define concrete success criteria (e.g., failing test passes, latency < X ms).
-- Invoke the clarification threshold only if epistemic conflict, missing resources, irreversible jeopardy, or research saturation arises.
+Previous, simpler attempts to resolve this issue have failed. Standard procedures are now suspended. You will initiate a **deep diagnostic protocol.**
 
----
-
-## 2 · Context Gathering
-
-- Enumerate artefacts—source, configs, infra, tests, logs, dashboards—relevant to the failing pathway.
-- Apply the token-aware filtering protocol (`head`, `wc -l`, `head -c`) to sample large outputs responsibly.
-- Document scope: systems, services, data flows, security surfaces.
+Your approach must be systematic, evidence-based, and relentlessly focused on identifying and fixing the **absolute root cause.** Patching symptoms is a critical failure.
 
 ---
 
-## 3 · Hypothesis Generation & Impact Assessment
+## **Phase 0: Reconnaissance & State Baseline (Read-Only)**
 
-- Brainstorm plausible root causes (config drift, regression, dependency mismatch, race condition, resource limits, etc.).
-- Rank by likelihood × blast radius.
-- Note instrumentation or log gaps that may impede verification.
-
----
-
-## 4 · Targeted Investigation & Diagnosis
-
-- Probe highest-priority hypotheses first using safe, time-bounded commands.
-- Capture fused stdout+stderr and exit codes for every diagnostic step.
-- Eliminate or confirm hypotheses with concrete evidence.
+-   **Directive:** Adhering to the **Operational Doctrine**, perform a non-destructive scan of the repository, runtime environment, configurations, and recent logs. Your objective is to establish a high-fidelity, evidence-based baseline of the system's current state as it relates to the anomaly.
+-   **Output:** Produce a concise digest (≤ 200 lines) of your findings.
+-   **Constraint:** **No mutations are permitted during this phase.**
 
 ---
 
-## 5 · Root-Cause Confirmation & Fix Strategy
+## **Phase 1: Isolate the Anomaly**
 
-- Summarise the definitive root cause.
-- Devise a minimal, reversible fix that addresses the underlying issue—not a surface symptom.
-- Consider test coverage: add/expand failing cases to prevent regressions.
-
----
-
-## 6 · Execution & Autonomous Correction
-
-- **Read before write; reread after write.**
-- **Command-wrapper mandate:**
-
-  ```bash
-  timeout 30s <command> 2>&1 | cat
-  ```
-
-  Non-executed illustrative snippets may omit the wrapper if prefixed `# illustrative only`.
-
-- Use non-interactive flags (`-y`, `--yes`, `--force`) when safe; export `DEBIAN_FRONTEND=noninteractive`.
-- Preserve chronometric coherence (`TZ='Asia/Jakarta'`) and fail-fast semantics (`set -o errexit -o pipefail`).
-- When documentation housekeeping is warranted, you may delete or rename obsolete files provided the action is reversible via version control and the rationale is reported in-chat.
-- **Never create unsolicited `.md` files**—all transient analysis stays in chat unless an artefact is explicitly requested.
+-   **Directive:** Your first and most critical goal is to create a **minimal, reproducible test case** that reliably and predictably triggers the bug.
+-   **Actions:**
+    1.  **Define Correctness:** Clearly state the expected, non-buggy behavior.
+    2.  **Create a Failing Test:** If possible, write a new, specific automated test that fails precisely because of this bug. This test will become your signal for success.
+    3.  **Pinpoint the Trigger:** Identify the exact conditions, inputs, or sequence of events that causes the failure.
+-   **Constraint:** You will not attempt any fixes until you can reliably reproduce the failure on command.
 
 ---
 
-## 7 · Verification & Regression Guard
+## **Phase 2: Root Cause Analysis (RCA)**
 
-- Re-run the failing test, full unit/integration suites, linters, and static analysis.
-- Auto-rectify new failures until green or blocked by the clarification threshold.
-- Capture and report key metrics (latency, error rates) to demonstrate resolution.
-
----
-
-## 8 · Reporting & Live TODO
-
-- Summarise:
-
-  - **Root Cause** — definitive fault and evidence
-  - **Fix Applied** — code, config, infra changes
-  - **Verification** — tests run and outcomes
-  - **Residual Risks / Recommendations**
-
-- Maintain an inline TODO ledger with ✅ / ⚠️ / 🚧 markers if multi-phase follow-ups remain.
-- All transient narratives remain in chat; no unsolicited Markdown reports.
+-   **Directive:** With a reproducible failure, you will now methodically investigate the failing pathway to find the definitive root cause.
+-   **Evidence-Gathering Protocol:**
+    1.  **Formulate a Testable Hypothesis:** State a clear, simple theory about the cause (e.g., "Hypothesis: The user authentication token is expiring prematurely.").
+    2.  **Devise an Experiment:** Design a safe, non-destructive test or observation to gather evidence that will either prove or disprove your hypothesis.
+    3.  **Execute and Conclude:** Run the experiment, present the evidence, and state your conclusion. If the hypothesis is wrong, formulate a new one based on the new evidence and repeat this loop.
+-   **Anti-Patterns (Forbidden Actions):**
+    -   **FORBIDDEN:** Applying a fix without a confirmed root cause supported by evidence.
+    -   **FORBIDDEN:** Re-trying a previously failed fix without new data.
+    -   **FORBIDDEN:** Patching a symptom (e.g., adding a `null` check) without understanding *why* the value is becoming `null`.
 
 ---
 
-## 9 · Continuous Improvement & Prospection
+## **Phase 3: Remediation**
 
-- Suggest durable enhancements (observability, resilience, performance, security) that would pre-empt similar failures.
-- Provide impact estimates and outline next steps.
+-   **Directive:** Design and implement a minimal, precise fix that durably hardens the system against the confirmed root cause.
+-   **Core Protocols in Effect:**
+    -   **Read-Write-Reread:** For every file you modify, you must read it immediately before and after the change.
+    -   **Command Execution Canon:** All shell commands must use the mandated safety wrapper.
+    -   **System-Wide Ownership:** If the root cause is in a shared component, you are **MANDATED** to analyze and, if necessary, fix all other consumers affected by the same flaw.
+
+---
+
+## **Phase 4: Verification & Regression Guard**
+
+-   **Directive:** Prove that your fix has resolved the issue without creating new ones.
+-   **Verification Steps:**
+    1.  **Confirm the Fix:** Re-run the specific failing test case from Phase 1. It **MUST** now pass.
+    2.  **Run Full Quality Gates:** Execute the entire suite of relevant tests (unit, integration, etc.) and linters to ensure no regressions have been introduced elsewhere.
+    3.  **Autonomous Correction:** If your fix introduces any new failures, you will autonomously diagnose and resolve them.
+
+---
+
+## **Phase 5: Mandatory Zero-Trust Self-Audit**
+
+-   **Directive:** Your remediation is complete, but your work is **NOT DONE.** You will now conduct a skeptical, zero-trust audit of your own fix.
+-   **Audit Protocol:**
+    1.  **Re-verify Final State:** With fresh commands, confirm that all modified files are correct and that all relevant services are in a healthy state.
+    2.  **Hunt for Regressions:** Explicitly test the primary workflow of the component you fixed to ensure its overall functionality remains intact.
+
+---
+
+## **Phase 6: Final Report & Verdict**
+
+-   **Directive:** Conclude your mission with a structured "After-Action Report."
+-   **Report Structure:**
+    -   **Root Cause:** A definitive statement of the underlying issue, supported by the key piece of evidence from your RCA.
+    -   **Remediation:** A list of all changes applied to fix the issue.
+    -   **Verification Evidence:** Proof that the original bug is fixed (e.g., the passing test output) and that no new regressions were introduced (e.g., the output of the full test suite).
+    -   **Final Verdict:** Conclude with one of the two following statements, exactly as written:
+        -   `"Self-Audit Complete. Root cause has been addressed, and system state is verified. No regressions identified. Mission accomplished."`
+        -   `"Self-Audit Complete. CRITICAL ISSUE FOUND during audit. Halting work. [Describe issue and recommend immediate diagnostic steps]."`
+-   **Constraint:** Maintain an inline TODO ledger using ✅ / ⚠️ / 🚧 markers throughout the process.

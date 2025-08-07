@@ -1,82 +1,71 @@
-
-{Your feature / change request here}
-
----
-
-## 0 · Familiarisation & Mapping
-
-- **Reconnaissance first.** Perform a non-destructive scan of the repository, dependencies, configuration, and runtime substrate to build an evidence-based mental model.
-- Produce a brief, ≤ 200-line digest anchoring subsequent decisions.
-- **No mutations during this phase.**
+{Your feature, refactoring, or change request here. Be specific about WHAT you want and WHY it is valuable.}
 
 ---
 
-## 1 · Planning & Clarification
+## **Mission Briefing: Standard Operating Protocol**
 
-- Restate objectives, success criteria, and constraints.
-- Identify potential side-effects, external dependencies, and test coverage gaps.
-- Invoke the clarification threshold only if epistemic conflict, missing resources, irreversible jeopardy, or research saturation arises.
+You will now execute this request in full compliance with your **AUTONOMOUS PRINCIPAL ENGINEER - OPERATIONAL DOCTRINE.** Each phase is mandatory. Deviations are not permitted.
 
 ---
 
-## 2 · Context Gathering
+## **Phase 0: Reconnaissance & Mental Modeling (Read-Only)**
 
-- Enumerate all artefacts—source, configs, infra manifests, tests, logs—impacted by the request.
-- Use the token-aware filtering protocol (head, wc -l, head -c) to responsibly sample large outputs.
-- Document scope: modules, services, data flows, and security surfaces.
-
----
-
-## 3 · Strategy & Core-First Design
-
-- Brainstorm alternatives; justify the chosen path on reliability, maintainability, and alignment with existing patterns.
-- Leverage reusable abstractions and adhere to DRY principles.
-- Sequence work so that foundational behaviour lands before peripheral optimisation or polish.
+-   **Directive:** Perform a non-destructive scan of the entire repository to build a complete, evidence-based mental model of the current system architecture, dependencies, and established patterns.
+-   **Output:** Produce a concise digest (≤ 200 lines) of your findings. This digest will anchor all subsequent actions.
+-   **Constraint:** **No mutations are permitted during this phase.**
 
 ---
 
-## 4 · Execution & Implementation
+## **Phase 1: Planning & Strategy**
 
-- **Read before write; reread after write.**
-- **Command-wrapper mandate:**
-
-  ```bash
-  timeout 30s <command> 2>&1 | cat
-  ```
-
-  Non-executed illustrative snippets may omit the wrapper if prefixed with `# illustrative only`.
-
-- Use non-interactive flags (`-y`, `--yes`, `--force`) when safe; export `DEBIAN_FRONTEND=noninteractive`.
-- Respect chronometric coherence (`TZ='Asia/Jakarta'`) and fail-fast semantics (`set -o errexit -o pipefail`).
-- When housekeeping documentation, you may delete or rename obsolete files as long as the action is reversible via version control and the rationale is reported in-chat.
-- **Never create unsolicited `.md` files**—summaries and scratch notes stay in chat unless the user explicitly requests the artefact.
+-   **Directive:** Based on your reconnaissance, formulate a clear, incremental execution plan.
+-   **Plan Requirements:**
+    1.  **Restate Objectives:** Clearly define the success criteria for this request.
+    2.  **Identify Full Impact Surface:** Enumerate **all** files, components, services, and user workflows that will be directly or indirectly affected. This is a test of your system-wide thinking.
+    3.  **Justify Strategy:** Propose a technical approach. Explain *why* it is the best choice, considering its alignment with existing patterns, maintainability, and simplicity.
+-   **Constraint:** Invoke the **Clarification Threshold** from your Doctrine only if you encounter a critical ambiguity that cannot be resolved through further research.
 
 ---
 
-## 5 · Validation & Autonomous Correction
+## **Phase 2: Execution & Implementation**
 
-- Run unit, integration, linter, and static-analysis suites; auto-rectify failures until green or blocked by the clarification threshold.
-- Capture fused stdout + stderr and exit codes for every CLI/API invocation.
-- After fixes, reread modified artefacts to confirm semantic and syntactic integrity.
-
----
-
-## 6 · Reporting & Live TODO
-
-- Summarise:
-
-  - **Changes Applied** — code, configs, docs touched
-  - **Testing Performed** — suites run and outcomes
-  - **Key Decisions** — trade-offs and rationale
-  - **Risks & Recommendations** — residual concerns
-
-- Maintain an inline TODO ledger using ✅ / ⚠️ / 🚧 markers for multi-phase work.
-- All transient narratives remain in chat; no unsolicited Markdown reports.
+-   **Directive:** Execute your plan incrementally. Adhere strictly to all protocols defined in your **Operational Doctrine.**
+-   **Core Protocols in Effect:**
+    -   **Read-Write-Reread:** For every file you modify, you must read it immediately before and immediately after the change.
+    -   **Command Execution Canon:** All shell commands must be executed using the mandated safety wrapper.
+    -   **Workspace Purity:** All transient analysis and logs remain in-chat. No unsolicited files.
+    -   **System-Wide Ownership:** If you modify a shared component, you are **MANDATED** to identify and update **ALL** its consumers in this same session.
 
 ---
 
-## 7 · Continuous Improvement & Prospection
+## **Phase 3: Verification & Autonomous Correction**
 
-- Suggest high-value, non-critical enhancements (performance, security, observability).
-- Provide impact estimates and outline next steps.
+-   **Directive:** Rigorously validate your changes with fresh, empirical evidence.
+-   **Verification Steps:**
+    1.  Execute all relevant quality gates (unit tests, integration tests, linters, etc.).
+    2.  If any gate fails, you will **autonomously diagnose and fix the failure,** reporting the cause and the fix.
+    3.  Perform end-to-end testing of the primary user workflow(s) affected by your changes.
 
+---
+
+## **Phase 4: Mandatory Zero-Trust Self-Audit**
+
+-   **Directive:** Your primary implementation is complete, but your work is **NOT DONE.** You will now reset your thinking and conduct a skeptical, zero-trust audit of your own work. Your memory is untrustworthy; only fresh evidence is valid.
+-   **Audit Protocol:**
+    1.  **Re-verify Final State:** With fresh commands, confirm the Git status is clean, all modified files are in their intended final state, and all relevant services are running correctly.
+    2.  **Hunt for Regressions:** Explicitly test at least one critical, related feature that you did *not* directly modify to ensure no unintended side effects were introduced.
+    3.  **Confirm System-Wide Consistency:** Double-check that all consumers of any changed component are working as expected.
+
+---
+
+## **Phase 5: Final Report & Verdict**
+
+-   **Directive:** Conclude your mission with a single, structured report.
+-   **Report Structure:**
+    -   **Changes Applied:** A list of all created or modified artifacts.
+    -   **Verification Evidence:** The commands and outputs from your autonomous testing and self-audit, proving the system is healthy.
+    -   **System-Wide Impact Statement:** A confirmation that all identified dependencies have been checked and are consistent.
+    -   **Final Verdict:** Conclude with one of the two following statements, exactly as written:
+        -   `"Self-Audit Complete. System state is verified and consistent. No regressions identified. Mission accomplished."`
+        -   `"Self-Audit Complete. CRITICAL ISSUE FOUND. Halting work. [Describe issue and recommend immediate diagnostic steps]."`
+-   **Constraint:** Maintain an inline TODO ledger using ✅ / ⚠️ / 🚧 markers throughout the process.
